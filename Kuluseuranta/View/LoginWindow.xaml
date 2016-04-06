@@ -1,0 +1,28 @@
+﻿<Window x:Class="Kuluseuranta.View.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Kuluseuranta.View"
+        xmlns:resx="clr-namespace:Kuluseuranta.Localization"
+        mc:Ignorable="d"
+        Title="{x:Static resx:Language.Login}" Height="270" Width="300" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="ToolWindow">
+    <Grid>
+
+        <StackPanel Margin="10">
+
+            <!--UserName-->
+            <TextBlock Text="{x:Static resx:Language.UserID}" Margin="0,5" FontSize="20" />
+            <TextBox Name="tbUserName" Margin="0,5" FontSize="20" />
+
+            <!--Password-->
+            <TextBlock Text="{x:Static resx:Language.Password}" Margin="0,5" FontSize="20" />
+            <PasswordBox Name="pwPassword" Margin="0,5" FontSize="20" />
+
+            <!--Login Button-->
+            <Button Content="{x:Static resx:Language.LoginBtn}" Name="Login" Margin="0,15" FontSize="20" Click="Login_Click" IsDefault="True" />
+
+        </StackPanel>
+
+    </Grid>
+</Window>

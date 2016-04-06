@@ -1,0 +1,492 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AddCategory" xml:space="preserve">
+    <value>Lisää kategoria</value>
+  </data>
+  <data name="AddNewCategoryMessage" xml:space="preserve">
+    <value>Uuden kategorian lisäys</value>
+  </data>
+  <data name="AddNewPaymentMessage" xml:space="preserve">
+    <value>Uuden maksun lisäys</value>
+  </data>
+  <data name="AddNewSubCategoryMessage" xml:space="preserve">
+    <value>Uuden alakategorian lisäys</value>
+  </data>
+  <data name="AddNewUserMessage" xml:space="preserve">
+    <value>Uuden käyttäjän lisäys</value>
+  </data>
+  <data name="AddPayment" xml:space="preserve">
+    <value>Lisää maksu</value>
+  </data>
+  <data name="AddSubCategory" xml:space="preserve">
+    <value>Lisää alakategoria</value>
+  </data>
+  <data name="AddUser" xml:space="preserve">
+    <value>Lisää käyttäjä</value>
+  </data>
+  <data name="AdminUser" xml:space="preserve">
+    <value>Pääkäyttäjä</value>
+  </data>
+  <data name="AllCategories" xml:space="preserve">
+    <value>Kaikki kategoriat</value>
+  </data>
+  <data name="AllSubCategories" xml:space="preserve">
+    <value>Kaikki alakategoriat</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Määrä</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Takaisin</value>
+  </data>
+  <data name="CannotSaveBecauseX" xml:space="preserve">
+    <value>Ei voi tallentaa: {0}</value>
+  </data>
+  <data name="CannotSaveCategoryNotSelectedMessage" xml:space="preserve">
+    <value>Tallennusta ei voi suorittaa koska kategoriaa ei ole valittu listalta</value>
+  </data>
+  <data name="CannotSavePaymentNotSelectedMessage" xml:space="preserve">
+    <value>Tallennusta ei voi suorittaa koska maksua ei ole valittu listalta</value>
+  </data>
+  <data name="CannotSaveSubCategoryNotSelectedMessage" xml:space="preserve">
+    <value>Tallennusta ei voi suorittaa koska alakategoriaa ei ole valittu listalta</value>
+  </data>
+  <data name="CannotSaveUserNotSelectedMessage" xml:space="preserve">
+    <value>Tallennusta ei voi suorittaa koska käyttäjää ei ole valittu listalta</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>Kategoriat</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Kategoria</value>
+  </data>
+  <data name="CategoryIsMissing" xml:space="preserve">
+    <value>kategoria puuttuu</value>
+  </data>
+  <data name="CategoryListUpdatedAtX" xml:space="preserve">
+    <value>Kategoriat on haettu {0}</value>
+  </data>
+  <data name="CategoryMaintenance" xml:space="preserve">
+    <value>Kategorioiden ylläpito</value>
+  </data>
+  <data name="CategorySelection" xml:space="preserve">
+    <value>Kategorian valinta</value>
+  </data>
+  <data name="CategorysXDetailsAreUpdated" xml:space="preserve">
+    <value>Kategorian {0} tiedot on päivitetty</value>
+  </data>
+  <data name="CategoryXIsDeleted" xml:space="preserve">
+    <value>Kategoria {0} on poistettu</value>
+  </data>
+  <data name="ChangesAreNotSavedYetSaveNowMessage" xml:space="preserve">
+    <value>Muutoksia ei ole vielä tallennettu. Tallennetaanko nyt?</value>
+  </data>
+  <data name="ChangesAreSaved" xml:space="preserve">
+    <value>Muuttuneet tiedot on tallennettu</value>
+  </data>
+  <data name="ClickGetCategoriesMessage" xml:space="preserve">
+    <value>Klikkaa "Hae kategoriat" hakeaksesi kategorioiden tiedot</value>
+  </data>
+  <data name="ClickGetPaymentsMessage" xml:space="preserve">
+    <value>Klikkaa "Hae maksut" hakeaksesi maksujen tiedot</value>
+  </data>
+  <data name="ClickGetReportsMessage" xml:space="preserve">
+    <value>Valitse aikaväli sekä haluttu kategoria mahdollisen alakategorian kanssa ja klikkaa "Hae" hakeaksesi raportin tiedot</value>
+  </data>
+  <data name="ClickGetSubCategoriesMessage" xml:space="preserve">
+    <value>Klikkaa "Hae alakategoriat" hakeaksesi alakategorioiden tiedot</value>
+  </data>
+  <data name="ClickGetUsersMessage" xml:space="preserve">
+    <value>Klikkaa "Hae käyttäjät" hakeaksesi käyttäjien tiedot</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Sulje</value>
+  </data>
+  <data name="CommonForAll" xml:space="preserve">
+    <value>Kaikille yleinen</value>
+  </data>
+  <data name="ConfirmDeleteting" xml:space="preserve">
+    <value>Poiston vahvistaminen</value>
+  </data>
+  <data name="ConfirmDeletetingCategoryX" xml:space="preserve">
+    <value>Haluatko varmasti poistaa kategorian {0}?</value>
+  </data>
+  <data name="ConfirmDeletetingPaymentX" xml:space="preserve">
+    <value>Haluatko varmasti poistaa maksun {0}?</value>
+  </data>
+  <data name="ConfirmDeletetingSubCategoryX" xml:space="preserve">
+    <value>Haluatko varmasti poistaa alakategorian {0}?</value>
+  </data>
+  <data name="ConfirmDeletetingUserX" xml:space="preserve">
+    <value>Haluatko varmasti poistaa käyttäjän {0}?</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>Tallennettu</value>
+  </data>
+  <data name="DeleteCategory" xml:space="preserve">
+    <value>Poista kategoria</value>
+  </data>
+  <data name="DeletePayment" xml:space="preserve">
+    <value>Poista maksu</value>
+  </data>
+  <data name="DeleteSubCategory" xml:space="preserve">
+    <value>Poista alakategoria</value>
+  </data>
+  <data name="DeleteUser" xml:space="preserve">
+    <value>Poista käyttäjä</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Kuvaus</value>
+  </data>
+  <data name="DueDate" xml:space="preserve">
+    <value>Eräpäivä</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Sähköposti</value>
+  </data>
+  <data name="EmailIsIncorrect" xml:space="preserve">
+    <value>Sähköposti on virheellinen</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Etunimi</value>
+  </data>
+  <data name="FirstNameIsMissing" xml:space="preserve">
+    <value>etunimi puuttuu</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Kokonimi</value>
+  </data>
+  <data name="Get" xml:space="preserve">
+    <value>Hae</value>
+  </data>
+  <data name="GetCategories" xml:space="preserve">
+    <value>Hae kategoriat</value>
+  </data>
+  <data name="GetPayments" xml:space="preserve">
+    <value>Hae maksut</value>
+  </data>
+  <data name="GetSubCategories" xml:space="preserve">
+    <value>Hae alakategoriat</value>
+  </data>
+  <data name="GetUsers" xml:space="preserve">
+    <value>Hae käyttäjät</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Sukunimi</value>
+  </data>
+  <data name="LastNameIsMissing" xml:space="preserve">
+    <value>sukunimi puuttuu</value>
+  </data>
+  <data name="Latest" xml:space="preserve">
+    <value>Viimeisimmät</value>
+  </data>
+  <data name="Modified" xml:space="preserve">
+    <value>Muokattu</value>
+  </data>
+  <data name="NewCategoryXIsSaved" xml:space="preserve">
+    <value>Uusi kategoria {0} on tallennettu</value>
+  </data>
+  <data name="NewPaymentXIsSaved" xml:space="preserve">
+    <value>Uusi maksu {0} on tallennettu</value>
+  </data>
+  <data name="NewSubCategoryXIsSaved" xml:space="preserve">
+    <value>Uusi alakategoria {0} on tallennettu</value>
+  </data>
+  <data name="NewUserXIsSaved" xml:space="preserve">
+    <value>Uusi käyttäjä {0} on tallennettu</value>
+  </data>
+  <data name="NormalUser" xml:space="preserve">
+    <value>Tavallinen käyttäjä</value>
+  </data>
+  <data name="Notes" xml:space="preserve">
+    <value>Muistiinpanot</value>
+  </data>
+  <data name="Paid" xml:space="preserve">
+    <value>Maksettu</value>
+  </data>
+  <data name="PaymentIsDeleted" xml:space="preserve">
+    <value>Maksu on poistettu</value>
+  </data>
+  <data name="PaymentListUpdatedAtX" xml:space="preserve">
+    <value>Maksut on haettu {0}</value>
+  </data>
+  <data name="PaymentReports" xml:space="preserve">
+    <value>Maksujen tarkastelu</value>
+  </data>
+  <data name="PaymentsEntering" xml:space="preserve">
+    <value>Maksujen syöttö</value>
+  </data>
+  <data name="PaymentsXDetailsAreUpdated" xml:space="preserve">
+    <value>Maksun {0} tiedot on päivitetty</value>
+  </data>
+  <data name="Payor" xml:space="preserve">
+    <value>Laskuttaja</value>
+  </data>
+  <data name="PayorIsMissing" xml:space="preserve">
+    <value>laskuttaja puuttuu</value>
+  </data>
+  <data name="Period" xml:space="preserve">
+    <value>Aikaväli</value>
+  </data>
+  <data name="PersonalOnly" xml:space="preserve">
+    <value>Henkilökohtainen</value>
+  </data>
+  <data name="RowsCountX" xml:space="preserve">
+    <value>Rivejä: {0} kpl</value>
+  </data>
+  <data name="RowsSumX" xml:space="preserve">
+    <value>Summa: {0} €</value>
+  </data>
+  <data name="SameNameCategoryListedAlready" xml:space="preserve">
+    <value>Saman niminen kategoria on jo listalla!</value>
+  </data>
+  <data name="SameNamePaymentListedAlready" xml:space="preserve">
+    <value>Saman laskuttajan maksu on jo listalla!</value>
+  </data>
+  <data name="SameNameSubCategoryListedAlready" xml:space="preserve">
+    <value>Saman niminen alakategoria on jo listalla!</value>
+  </data>
+  <data name="SameNameUserListedAlready" xml:space="preserve">
+    <value>Saman niminen käyttäjä on jo listalla!</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Tallenna</value>
+  </data>
+  <data name="SelectCategoryFirstMessage" xml:space="preserve">
+    <value>Valitse ensin kategoria</value>
+  </data>
+  <data name="SelectedCategoryHasNoSubCategories" xml:space="preserve">
+    <value>Valitulla kategorialla ei ole alakategorioita</value>
+  </data>
+  <data name="SelectedCategoryX" xml:space="preserve">
+    <value>Valittu kategoria: {0}</value>
+  </data>
+  <data name="SelectedPaymentX" xml:space="preserve">
+    <value>Valittu maksu: {0}</value>
+  </data>
+  <data name="SelectedSubCategoryX" xml:space="preserve">
+    <value>Valittu alakategoria: {0}</value>
+  </data>
+  <data name="SelectedUserX" xml:space="preserve">
+    <value>Valittu käyttäjä: {0}</value>
+  </data>
+  <data name="SubCategories" xml:space="preserve">
+    <value>Alakategoriat</value>
+  </data>
+  <data name="SubCategory" xml:space="preserve">
+    <value>Alakategoria</value>
+  </data>
+  <data name="SubCategoryIsDeleted" xml:space="preserve">
+    <value>Alakategoria on poistettu</value>
+  </data>
+  <data name="SubCategoryIsMissing" xml:space="preserve">
+    <value>alakategoria puuttuu</value>
+  </data>
+  <data name="SubCategoryListUpdatedAtX" xml:space="preserve">
+    <value>Alakategoriat on haettu {0}</value>
+  </data>
+  <data name="SubCategoryMaintenance" xml:space="preserve">
+    <value>Alakategorioiden ylläpito</value>
+  </data>
+  <data name="SubCategorysXDetailsAreUpdated" xml:space="preserve">
+    <value>Alakategorian {0} tiedot on päivitetty</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Tyyppi</value>
+  </data>
+  <data name="UnsavedChanges" xml:space="preserve">
+    <value>Tallentamattomia muutoksia</value>
+  </data>
+  <data name="UserIsDeleted" xml:space="preserve">
+    <value>Käyttäjä on poistettu</value>
+  </data>
+  <data name="UserListUpdatedAtX" xml:space="preserve">
+    <value>Käyttäjät on haettu {0}</value>
+  </data>
+  <data name="UserManagement" xml:space="preserve">
+    <value>Käyttäjien hallinta</value>
+  </data>
+  <data name="UserRole" xml:space="preserve">
+    <value>Käyttäjärooli</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Käyttäjät</value>
+  </data>
+  <data name="UsersXDetailsAreUpdated" xml:space="preserve">
+    <value>Käyttäjän {0} tiedot on päivitetty</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Kirjautuminen</value>
+  </data>
+  <data name="LoginBtn" xml:space="preserve">
+    <value>Kirjaudu</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Salasana</value>
+  </data>
+  <data name="Registration" xml:space="preserve">
+    <value>Rekisteröidy</value>
+  </data>
+  <data name="UserID" xml:space="preserve">
+    <value>Käyttäjätunnus</value>
+  </data>
+  <data name="LoginFailed" xml:space="preserve">
+    <value>Kirjautuminen epäonnistui</value>
+  </data>
+  <data name="LoginFailedCheckUsernameAndPassword" xml:space="preserve">
+    <value>Kirjautuminen epäonnistui! Tarkista käyttäjätunnus ja salasana.</value>
+  </data>
+  <data name="LoggedUserX" xml:space="preserve">
+    <value>Kirjautuneena: {0}</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Vaihda salasana</value>
+  </data>
+  <data name="OldPassword" xml:space="preserve">
+    <value>Vanha salasana</value>
+  </data>
+  <data name="PasswordConfirmation" xml:space="preserve">
+    <value>Salasanan vahvistus</value>
+  </data>
+  <data name="PasswordChanging" xml:space="preserve">
+    <value>Salasanan vaihto</value>
+  </data>
+  <data name="CannotChangePassword" xml:space="preserve">
+    <value>Salasanan vaihtoa ei voi suorittaa</value>
+  </data>
+  <data name="NewPasswordCannotBeOldPassword" xml:space="preserve">
+    <value>Uusi salasana pitää olla eri kuin vaihdettava salasana!</value>
+  </data>
+  <data name="PasswordChanged" xml:space="preserve">
+    <value>Salasana on vaihdettu</value>
+  </data>
+  <data name="PasswordChangingFailed" xml:space="preserve">
+    <value>Salasanan vaihto ei onnistunut!</value>
+  </data>
+  <data name="PasswordLengthMustBeAtLeastXMarks" xml:space="preserve">
+    <value>Salasanan pituuden on oltava vähintään {0} merkkiä.</value>
+  </data>
+  <data name="PasswordsDoesNotMatch" xml:space="preserve">
+    <value>Salasana ja sen vahvistus ei täsmää!</value>
+  </data>
+  <data name="PasswordToChange" xml:space="preserve">
+    <value>Vaihdettava salasana</value>
+  </data>
+</root>

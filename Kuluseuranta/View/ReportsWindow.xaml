@@ -1,0 +1,66 @@
+﻿<Window x:Class="Kuluseuranta.View.ReportsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Kuluseuranta.View"
+        xmlns:resx="clr-namespace:Kuluseuranta.Localization"
+        mc:Ignorable="d"
+        Title="{x:Static resx:Language.PaymentReports}" Height="600" Width="880" WindowStartupLocation="CenterScreen">
+    <Grid x:Name="grdReports" Language="fi-FI">
+
+        <DockPanel Background="Gainsboro" Width="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" LastChildFill="True">
+
+            <StackPanel Orientation="Vertical" DockPanel.Dock="Top">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{x:Static resx:Language.Period}" VerticalAlignment="Center" Margin="5" />
+                    <DatePicker x:Name="dtpDate1" VerticalAlignment="Center" Margin="5" />
+                    <TextBlock Text="-" VerticalAlignment="Center" Margin="5" />
+                    <DatePicker x:Name="dtpDate2" VerticalAlignment="Center" Margin="5" />
+                    <TextBlock Text="{x:Static resx:Language.Category}" VerticalAlignment="Center" Margin="5" />
+                    <ComboBox x:Name="cboCategory" Margin="5" MinWidth="100"
+                        ItemsSource="{Binding}"
+                        SelectedValue="{Binding CategoryId, Mode=OneWay}"
+                        SelectedValuePath="Id"
+                        DisplayMemberPath="Name" SelectionChanged="cboCategory_SelectionChanged" />
+                    <TextBlock Text="{x:Static resx:Language.SubCategory}" VerticalAlignment="Center" Margin="5" />
+                    <ComboBox x:Name="cboSubCategory" Margin="5" MinWidth="100"
+                        ItemsSource="{Binding}"
+                        SelectedValue="{Binding SubCategoryId, Mode=OneWay}"
+                        SelectedValuePath="Id"
+                        DisplayMemberPath="Name" />
+                    <Button x:Name="btnGet" Content="{x:Static resx:Language.Get}" Margin="5" MinWidth="50" Click="btnGet_Click" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel x:Name="spLowest" DockPanel.Dock="Bottom">
+                <StatusBar>
+                    <StatusBarItem>
+                        <Label x:Name="lbMessages" Content="{x:Static resx:Language.ClickGetReportsMessage}" />
+                    </StatusBarItem>
+                    <StatusBarItem>
+                        <Label x:Name="lbRows" Content="Rivejä: 0 kpl" />
+                    </StatusBarItem>
+                    <StatusBarItem>
+                        <Label x:Name="lbTotal" Content="Summa: 0,00 €" />
+                    </StatusBarItem>
+                </StatusBar>
+            </StackPanel>
+
+            <!--<DataGrid x:Name="dgReports" AutoGenerateColumns="True" ItemsSource="{Binding}"/>-->
+            <DataGrid x:Name="dgReports" AutoGenerateColumns="False" ItemsSource="{Binding}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="{x:Static resx:Language.Payor}" Binding="{Binding Payor, Mode=OneWay}" />
+                    <DataGridTextColumn Header="{x:Static resx:Language.DueDate}" Binding="{Binding DueDate, Mode=OneWay, StringFormat=d}" />
+                    <DataGridTextColumn Header="{x:Static resx:Language.Paid}" Binding="{Binding PaidDate, Mode=OneWay, StringFormat=d}" />
+                    <DataGridTextColumn Header="{x:Static resx:Language.Amount}" Binding="{Binding Amount, Mode=OneWay, StringFormat=c}" />
+                    <DataGridTextColumn Header="{x:Static resx:Language.Created}" Binding="{Binding Created, Mode=OneWay, StringFormat=g}" />
+                    <DataGridTextColumn Header="{x:Static resx:Language.Modified}" Binding="{Binding Modified, Mode=OneWay, StringFormat=g}" />
+                    <DataGridTextColumn Header="{x:Static resx:Language.Notes}" Binding="{Binding Notes}" Width="*" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+        </DockPanel>
+
+    </Grid>
+</Window>
