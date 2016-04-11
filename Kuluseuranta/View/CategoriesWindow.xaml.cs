@@ -3,7 +3,6 @@ using Kuluseuranta.Objects;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -18,6 +17,8 @@ namespace Kuluseuranta.View
     /// Property for Logged User
     /// </summary>
     private User LoggedUser { get; set; }
+
+    public static ObservableCollection<Category> Categories = new ObservableCollection<Category>();
 
     #region Constructor
 
@@ -56,7 +57,27 @@ namespace Kuluseuranta.View
       try
       {
         CategoryMaintenance.RefreshCategories(LoggedUser.Id);
-        lstCategories.DataContext = CategoryMaintenance.CategoryList;
+        Categories = new ObservableCollection<Category>();
+        Category root = new Category() { Name = Localization.Language.Categories };
+        Categories.Add(root);
+
+        foreach (Category category in CategoryMaintenance.CategoryList)
+        {
+          root.SubCategories.Add(category);
+        }
+
+        foreach (Category category in root.SubCategories)
+        {
+          CategoryMaintenance.RefreshCategories(LoggedUser.Id, category.Id);
+
+          foreach (Category subCategory in CategoryMaintenance.CategoryList)
+          {
+            category.SubCategories.Add(subCategory);
+          }
+        }
+
+        trvCategories.ItemsSource = Categories;
+
         message = string.Format(Localization.Language.CategoryListUpdatedAtX, DateTime.Now);
       }
       catch (Exception ex)
@@ -72,24 +93,61 @@ namespace Kuluseuranta.View
 
     private void btnNew_Click(object sender, RoutedEventArgs e)
     {
-      Category newCategory = new Category();
-      newCategory.Status = Status.Created;
-      newCategory.Level = 1;
-      spCategory.DataContext = newCategory;
-      cboTypes.SelectedIndex = 0;
-      txtName.Focus();
-      lbMessages.Content = Localization.Language.AddNewCategoryMessage;
+      try
+      {
+        spCategory.Visibility = Visibility.Visible;
+        Category category = (Category)trvCategories.SelectedItem;
+
+        Category newCategory = new Category();
+        newCategory.CreatorId = LoggedUser.Id;
+
+        if (category.Id == Guid.Empty) // Adding 1st level category
+        {
+          newCategory.ParentId = Guid.Empty;
+          newCategory.Level = 1;
+          lbMessages.Content = Localization.Language.AddNewCategoryMessage;
+        }
+        else // Adding 2nd level category
+        {
+          newCategory.ParentId = category.Id;
+          newCategory.Level = 2;
+          lbMessages.Content = Localization.Language.AddNewSubCategoryMessage;
+        }
+
+        spCategory.DataContext = newCategory;
+        cboTypes.SelectedIndex = 0;
+        txtName.Focus();
+      }
+      catch (Exception ex)
+      {
+        lbMessages.Content = ex.Message;
+      }
     }
 
     private void btnDelete_Click(object sender, RoutedEventArgs e)
     {
       try
       {
-        Category category = (Category)lstCategories.SelectedItem;
+        Category category = (Category)trvCategories.SelectedItem;
 
-        MessageBoxResult result = MessageBox.Show(
-          string.Format(Localization.Language.ConfirmDeletetingCategoryX, category.Name), Localization.Language.ConfirmDeleteting,
-          MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+        if (category.Id == Guid.Empty)
+        {
+          MessageBox.Show(Localization.Language.RootCategoryCannotBeDeleted);
+          return;
+        }
+
+        string message = "";
+
+        if (category.ParentId == Guid.Empty)
+        {
+          message = string.Format(Localization.Language.ConfirmDeletetingCategoryX, category.Name);
+        }
+        else
+        {
+          message = string.Format(Localization.Language.ConfirmDeletetingSubCategoryX, category.Name);
+        }
+
+        MessageBoxResult result = MessageBox.Show(message, Localization.Language.ConfirmDeleteting, MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
 
         if (result == MessageBoxResult.Yes)
         {
@@ -97,16 +155,23 @@ namespace Kuluseuranta.View
           {
             if (CategoryMaintenance.DeleteCategory(category) > 0)
             {
-              category.Status = Status.Deleted;
-              ((ObservableCollection<Category>)lstCategories.DataContext).Remove(category);
+              btnRefresh_Click(this, null);
             }
           }
           else // When not yet saved will be deleted ie. Id = Guid.Empty
           {
-            ((ObservableCollection<Category>)lstCategories.DataContext).Remove(category);
+            btnRefresh_Click(this, null);
           }
 
-          lbMessages.Content = string.Format(Localization.Language.CategoryXIsDeleted, category.Name);
+          
+          if (category.ParentId == Guid.Empty)
+          {
+            lbMessages.Content = string.Format(Localization.Language.CategoryXIsDeleted, category.Name);
+          }
+          else
+          {
+            lbMessages.Content = string.Format(Localization.Language.SubCategoryXIsDeleted, category.Name);
+          }
         }
       }
       catch (Exception ex)
@@ -131,30 +196,28 @@ namespace Kuluseuranta.View
       {
         if (HasDetailsErrors(category)) return; // Check for field values
 
-        // Check that category with the same name is not in the collection already
-        Category found = ((ObservableCollection<Category>)lstCategories.DataContext).FirstOrDefault(p => p.Name == category.Name && p.Id != category.Id);
-
-        if (found != null)
-        {
-          MessageBox.Show(Localization.Language.SameNameCategoryListedAlready);
-          throw new Exception(Localization.Language.SameNameCategoryListedAlready);
-        }
-
+        CategoryMaintenance.LoggedUser = LoggedUser;
         category.OwnerId = (Guid)cboTypes.SelectedValue;
 
         if (category.Id != Guid.Empty)
         {
-          category.Status = Status.Modified;
           CategoryMaintenance.UpdateCategory(category);
           lbMessages.Content = string.Format(Localization.Language.CategorysXDetailsAreUpdated, category.Name);
         }
         else
         {
           CategoryMaintenance.CreateCategory(category);
-          ((ObservableCollection<Category>)lstCategories.DataContext).Add(category);
-          lstCategories.SelectedIndex = lstCategories.Items.IndexOf(category);
-          lstCategories.ScrollIntoView(lstCategories.SelectedItem);
-          lbMessages.Content = string.Format(Localization.Language.NewCategoryXIsSaved, category.Name);
+          btnRefresh_Click(this, null);
+          
+
+          if (category.ParentId == Guid.Empty)
+          {
+            lbMessages.Content = string.Format(Localization.Language.NewCategoryXIsSaved, category.Name);
+          }
+          else
+          {
+            lbMessages.Content = string.Format(Localization.Language.NewSubCategoryXIsSaved, category.Name);
+          }
         }
       }
       catch (Exception ex)
@@ -185,29 +248,32 @@ namespace Kuluseuranta.View
       return errors;
     }
 
-    private void btnSubCategories_Click(object sender, RoutedEventArgs e)
+    private void trvCategories_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
     {
-      if (spCategory.DataContext == null || lstCategories.Items.Count == 0 || Guid.Parse(ID.Text) == Guid.Empty)
+      Category category = (Category)trvCategories.SelectedItem;
+
+      if (category.Id == Guid.Empty)
       {
-        MessageBox.Show(
-          Localization.Language.SelectCategoryFirstMessage,
-          Localization.Language.CategorySelection,
-          MessageBoxButton.OK, MessageBoxImage.Information);
-        return;
+        spCategory.Visibility = Visibility.Hidden;
+        btnDelete.Visibility = Visibility.Hidden;
+        lbMessages.Content = Localization.Language.RootCategorySelected;
       }
-
-      SubCategoriesWindow w = new SubCategoriesWindow(LoggedUser, Guid.Parse(ID.Text));
-      w.ShowDialog();
-    }
-
-    private void lstCategories_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-      if (lstCategories.SelectedItem != null)
+      else
       {
-        Category category = (Category)lstCategories.SelectedItem;
+        spCategory.Visibility = Visibility.Visible;
+        btnDelete.Visibility = Visibility.Visible;
+
         spCategory.DataContext = category;
         cboTypes.SelectedValue = category.OwnerId;
-        lbMessages.Content = string.Format(Localization.Language.SelectedCategoryX, category.Name);
+
+        if (category.ParentId == Guid.Empty)
+        {
+          lbMessages.Content = string.Format(Localization.Language.SelectedCategoryX, category.Name);
+        }
+        else
+        {
+          lbMessages.Content = string.Format(Localization.Language.SelectedSubCategoryX, category.Name);
+        }
       }
     }
 
@@ -226,5 +292,6 @@ namespace Kuluseuranta.View
       }
     }
 
+    
   }
 }

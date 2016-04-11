@@ -403,7 +403,7 @@ namespace Kuluseuranta.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Haluatko varmasti poistaa kategorian {0}?.
+        ///   Looks up a localized string similar to Haluatko varmasti poistaa kategorian {0} alakategorioineen?.
         /// </summary>
         public static string ConfirmDeletetingCategoryX {
             get {
@@ -916,6 +916,24 @@ namespace Kuluseuranta.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pääkategoriaa ei voi poistaa.
+        /// </summary>
+        public static string RootCategoryCannotBeDeleted {
+            get {
+                return ResourceManager.GetString("RootCategoryCannotBeDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Valittu pääkategoria.
+        /// </summary>
+        public static string RootCategorySelected {
+            get {
+                return ResourceManager.GetString("RootCategorySelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rivejä: {0} kpl.
         /// </summary>
         public static string RowsCountX {
@@ -1051,15 +1069,6 @@ namespace Kuluseuranta.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Alakategoria on poistettu.
-        /// </summary>
-        public static string SubCategoryIsDeleted {
-            get {
-                return ResourceManager.GetString("SubCategoryIsDeleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to alakategoria puuttuu.
         /// </summary>
         public static string SubCategoryIsMissing {
@@ -1092,6 +1101,15 @@ namespace Kuluseuranta.Localization {
         public static string SubCategorysXDetailsAreUpdated {
             get {
                 return ResourceManager.GetString("SubCategorysXDetailsAreUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alakategoria {0} on poistettu.
+        /// </summary>
+        public static string SubCategoryXIsDeleted {
+            get {
+                return ResourceManager.GetString("SubCategoryXIsDeleted", resourceCulture);
             }
         }
         

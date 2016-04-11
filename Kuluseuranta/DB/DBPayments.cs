@@ -16,6 +16,8 @@ namespace Kuluseuranta.DB
   /// </summary>
   public class DBPayments
   {
+    #region PROPERTIES
+
     /// <summary>
     /// Connection String
     /// </summary>
@@ -23,6 +25,10 @@ namespace Kuluseuranta.DB
     {
       get { return Properties.Settings.Default.ConnectionString; }
     }
+
+    #endregion PROPERTIES
+
+    #region METHODS
 
     /// <summary>
     /// Get List of Payments
@@ -277,6 +283,8 @@ WHERE
         throw ex;
       }
     }
+
+    #endregion METHODS
 
   }
 }

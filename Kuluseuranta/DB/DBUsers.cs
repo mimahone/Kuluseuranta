@@ -16,6 +16,8 @@ namespace Kuluseuranta.DB
   /// </summary>
   public class DBUsers
   {
+    #region PROPERTIES
+
     /// <summary>
     /// Connection String
     /// </summary>
@@ -28,6 +30,10 @@ namespace Kuluseuranta.DB
     /// Password salt
     /// </summary>
     private const string _salt = "hti5I1&D1761";
+
+    #endregion PROPERTIES
+
+    #region METHODS
 
     /// <summary>
     /// Password hashing
@@ -331,6 +337,8 @@ WHERE
         throw ex;
       }
     }
+
+    #endregion METHODS
 
   }
 }

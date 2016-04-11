@@ -5,15 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Kuluseuranta.View"
         xmlns:resx="clr-namespace:Kuluseuranta.Localization"
+        xmlns:self="clr-namespace:Kuluseuranta.Objects"
         mc:Ignorable="d"
         Title="{x:Static resx:Language.CategoryMaintenance}" Height="600" Width="800" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
-
-    <Window.Resources>
-        <!-- Malli tiedon esittämistä varten -->
-        <DataTemplate x:Key="Name">
-            <Label Content="{Binding Name}" FontSize="16" />
-        </DataTemplate>
-    </Window.Resources>
 
     <Grid Language="fi-FI">
 
@@ -41,23 +35,18 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" MinWidth="150" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <!-- Left Listbox for the selections -->
-                <TabControl Grid.Column="0">
-                    <TabItem Header="{x:Static resx:Language.Categories}">
-                        <ListBox 
-                            x:Name="lstCategories"
-                            ItemsSource="{Binding}"
-                            ItemTemplate="{StaticResource Name}"
-                            IsSynchronizedWithCurrentItem="True"
-                            SelectionMode="Single"
-                            ScrollViewer.VerticalScrollBarVisibility="Visible"
-                            SelectionChanged="lstCategories_SelectionChanged" />
-                    </TabItem>
-                </TabControl>
+                <!-- Left TreeView for the selections -->
+                <TreeView Name="trvCategories" SelectedItemChanged="trvCategories_SelectedItemChanged">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate DataType="{x:Type self:Category}" ItemsSource="{Binding SubCategories}">
+                            <TextBlock Text="{Binding Name}" />
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
 
                 <!-- GridSplitter -->
                 <GridSplitter Grid.Column="0" Width="10" HorizontalAlignment="Right" VerticalAlignment="Stretch" />
@@ -83,8 +72,7 @@
                     <TextBlock Grid.Row="0" Grid.Column="1" Margin="10" x:Name="ID" Text="{Binding Id, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static resx:Language.Category}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <TextBox Grid.Row = "1" Grid.Column="1" x:Name="txtName" Margin="10,10,90,10" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    <Button Grid.Row="1" Grid.Column="2" x:Name="btnSubCategories" Content="{x:Static resx:Language.SubCategories}" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Click="btnSubCategories_Click" />
+                    <TextBox Grid.Row = "1" Grid.Column="1" x:Name="txtName" Margin="10" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" UseLayoutRounding="True" />
 
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static resx:Language.Description}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
                     <TextBox Grid.Row="2" Grid.Column="1" Margin="10" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" />

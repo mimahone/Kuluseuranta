@@ -226,7 +226,7 @@
     <value>Poiston vahvistaminen</value>
   </data>
   <data name="ConfirmDeletetingCategoryX" xml:space="preserve">
-    <value>Haluatko varmasti poistaa kategorian {0}?</value>
+    <value>Haluatko varmasti poistaa kategorian {0} alakategorioineen?</value>
   </data>
   <data name="ConfirmDeletetingPaymentX" xml:space="preserve">
     <value>Haluatko varmasti poistaa maksun {0}?</value>
@@ -393,8 +393,8 @@
   <data name="SubCategory" xml:space="preserve">
     <value>Alakategoria</value>
   </data>
-  <data name="SubCategoryIsDeleted" xml:space="preserve">
-    <value>Alakategoria on poistettu</value>
+  <data name="SubCategoryXIsDeleted" xml:space="preserve">
+    <value>Alakategoria {0} on poistettu</value>
   </data>
   <data name="SubCategoryIsMissing" xml:space="preserve">
     <value>alakategoria puuttuu</value>
@@ -488,5 +488,11 @@
   </data>
   <data name="PasswordToChange" xml:space="preserve">
     <value>Vaihdettava salasana</value>
+  </data>
+  <data name="RootCategorySelected" xml:space="preserve">
+    <value>Valittu pääkategoria</value>
+  </data>
+  <data name="RootCategoryCannotBeDeleted" xml:space="preserve">
+    <value>Pääkategoriaa ei voi poistaa</value>
   </data>
 </root>

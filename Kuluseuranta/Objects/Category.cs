@@ -1,11 +1,11 @@
 ﻿/*
 * Copyright (C) JAMK/IT/Mika Mähönen
 * This file is part of the IIO11300 course's final project.
-* Created: 24.3.2016 Modified: 1.4.2016
+* Created: 24.3.2016 Modified: 11.4.2016
 * Authors: Mika Mähönen (K6058), Esa Salmikangas
 */
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Kuluseuranta.Objects
 {
@@ -54,11 +54,23 @@ namespace Kuluseuranta.Objects
     /// </summary>
     public Guid OwnerId { get; set; }
 
+    private ObservableCollection<Category> subCategories = new ObservableCollection<Category>();
+
     /// <summary>
     /// List of sub categories for the category
     /// (Only next level sub categories list)
     /// </summary>
-    public List<Category> SubCategoryList { get; set; }
+    public ObservableCollection<Category> SubCategories
+    {
+      get
+      {
+        return subCategories;
+      }
+      set
+      {
+        subCategories = value;
+      }
+    }
 
     #endregion
 
