@@ -15,6 +15,8 @@ namespace Kuluseuranta.View
   /// </summary>
   public partial class ReportsWindow : Window
   {
+    #region FIELDS AND PROPERTIES
+
     ObservableCollection<Payment> localData;
     ICollectionView view; // For filttering data
 
@@ -23,7 +25,9 @@ namespace Kuluseuranta.View
     /// </summary>
     private User LoggedUser { get; set; }
 
-    #region Constructor
+    #endregion FIELDS AND PROPERTIES
+
+    #region CONSTRUCTORS
 
     /// <summary>
     /// Constructor with Logged User
@@ -45,7 +49,9 @@ namespace Kuluseuranta.View
       btnGet_Click(this, null);
     }
 
-    #endregion Constructor
+    #endregion CONSTRUCTORS
+
+    #region METHODS
 
     private void FillCategoryCombo()
     {
@@ -59,44 +65,6 @@ namespace Kuluseuranta.View
       subList.Insert(0, new Category(Guid.Empty) { Name = Localization.Language.AllSubCategories });
       cboSubCategory.ItemsSource = subList;
       cboSubCategory.SelectedValue = Guid.Empty; // All Sub Categories as default selection
-    }
-
-    private void cboCategory_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-      if (cboCategory.SelectedItem != null)
-      {
-        Category category = (Category)cboCategory.SelectedItem;
-        CategoryMaintenance.RefreshCategories(LoggedUser.Id, category.Id);
-        var list = CategoryMaintenance.CategoryList;
-        list.Insert(0, new Category(Guid.Empty) { Name = Localization.Language.AllSubCategories });
-        cboSubCategory.ItemsSource = list;
-        cboSubCategory.SelectedValue = Guid.Empty; // All Sub Categories as default selection
-      }
-    }
-
-    private void btnGet_Click(object sender, RoutedEventArgs e)
-    {
-      SearchOptions options = new SearchOptions
-      {
-        StartDate = dtpDate1.SelectedDate,
-        EndDate = dtpDate2.SelectedDate,
-        CategoryId = (Guid?)cboCategory.SelectedValue,
-        SubCategoryId = (Guid?)cboSubCategory.SelectedValue,
-        UserId = LoggedUser.Id
-      };
-
-      PaymentsEntering.RefreshPayments(options);
-      localData = PaymentsEntering.PaymentList;
-
-      // View for filttering
-      view = CollectionViewSource.GetDefaultView(localData);
-
-      // Filter payments according selected category and subcategory
-      view.Filter = Filtering;
-
-      dgReports.DataContext = localData;
-      lbRows.Content = string.Format(Localization.Language.RowsCountX, localData.Count);
-      lbTotal.Content = string.Format(Localization.Language.RowsSumX, localData.Sum(p => p.Amount));
     }
 
     private bool Filtering(object item)
@@ -140,6 +108,67 @@ namespace Kuluseuranta.View
         }
       }
     }
+
+    #endregion METHODS
+
+    #region EVENT HANDLERS
+
+    private void cboCategory_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      if (cboCategory.SelectedItem != null)
+      {
+        Category category = (Category)cboCategory.SelectedItem;
+        CategoryMaintenance.RefreshCategories(LoggedUser.Id, category.Id);
+        var list = CategoryMaintenance.CategoryList;
+        list.Insert(0, new Category(Guid.Empty) { Name = Localization.Language.AllSubCategories });
+        cboSubCategory.ItemsSource = list;
+        cboSubCategory.SelectedValue = Guid.Empty; // All Sub Categories as default selection
+      }
+    }
+
+    private void btnGet_Click(object sender, RoutedEventArgs e)
+    {
+      SearchOptions options = new SearchOptions
+      {
+        StartDate = dtpDate1.SelectedDate,
+        EndDate = dtpDate2.SelectedDate,
+        CategoryId = (Guid?)cboCategory.SelectedValue,
+        SubCategoryId = (Guid?)cboSubCategory.SelectedValue,
+        UserId = LoggedUser.Id
+      };
+
+      PaymentsEntering.RefreshPayments(options);
+      localData = PaymentsEntering.PaymentList;
+
+      // View for filttering
+      view = CollectionViewSource.GetDefaultView(localData);
+      CollectionView view2 = new ListCollectionView(localData);
+
+      // Filter payments according selected period, category and subcategory
+      view.Filter = Filtering;
+      view2.Filter = Filtering;
+
+      dgReports.DataContext = localData;
+
+      lbMessages.Content = string.Format(Localization.Language.DataRetrievedDetailsMessage, 
+          ((DateTime)dtpDate1.SelectedDate).ToShortDateString(),
+          ((DateTime)dtpDate2.SelectedDate).ToShortDateString(),
+          cboCategory.Text,
+          cboSubCategory.Text
+        );
+
+      double sum = 0;
+
+      foreach (var item in view2)
+      {
+        sum += ((Payment)item).Amount;
+      }
+
+      lbRows.Content = string.Format(Localization.Language.RowsCountX, view2.Count);
+      lbTotal.Content = string.Format(Localization.Language.RowsSumX, sum);
+    }
+
+    #endregion EVENT HANDLERS
 
   }
 }

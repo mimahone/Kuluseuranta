@@ -1,7 +1,7 @@
 ﻿/*
 * Copyright (C) JAMK/IT/Mika Mähönen
 * This file is part of the IIO11300 course's final project.
-* Created: 24.3.2016 Modified: 1.4.2016
+* Created: 24.3.2016 Modified: 11.4.2016
 * Authors: Mika Mähönen (K6058), Esa Salmikangas
 */
 using System;
@@ -20,29 +20,51 @@ namespace Kuluseuranta.Objects
     /// </summary>
     public Guid OwnerId { get; set; }
 
+    private string payor;
+
     /// <summary>
     /// Payor's name property
     /// </summary>
-    public string Payor { get; set; }
+    public string Payor
+    {
+      get { return payor; }
+      set
+      {
+        payor = value;
+        Notify("Payor");
+        Notify("DisplayName");
+      }
+    }
 
     /// <summary>
     /// Due Date property
     /// </summary>
     public DateTime? DueDate { get; set; }
 
+    private DateTime? paidDate;
+
     /// <summary>
     /// Paid Date property
     /// </summary>
-    public DateTime? PaidDate { get; set; }
+    public DateTime? PaidDate
+    {
+      get { return paidDate; }
+      set
+      {
+        paidDate = value;
+        Notify("PaidDate");
+        Notify("DisplayName");
+      }
+    }
 
     /// <summary>
     /// Display Name property
     /// </summary>
     public string DisplayName {
       get {
-        if (DueDate.HasValue)
+        if (PaidDate.HasValue)
         {
-          return string.Format("{0}, {1}", Payor, DueDate.Value.ToShortDateString());
+          return string.Format("{0}, {1}", Payor, PaidDate.Value.ToShortDateString());
         }
 
         return string.Format("{0}, ---", Payor);
@@ -62,14 +84,14 @@ namespace Kuluseuranta.Objects
     /// <summary>
     /// CategoryId property
     /// </summary>
-    public Guid CategoryId { get; set; }
+    public Guid? CategoryId { get; set; }
 
     /// <summary>
     /// SubCategoryId property
     /// </summary>
-    public Guid SubCategoryId { get; set; }
+    public Guid? SubCategoryId { get; set; }
 
-    #endregion
+    #endregion PROPERTIES
 
     #region CONSTRUCTORS
 
@@ -81,12 +103,12 @@ namespace Kuluseuranta.Objects
     /// <summary>
     /// Constructor with id
     /// </summary>
-    /// <param name="id">User id</param>
+    /// <param name="id">Payment id</param>
     public Payment(Guid id)
     {
       Id = id;
     }
 
-    #endregion
+    #endregion CONSTRUCTORS
   }
 }

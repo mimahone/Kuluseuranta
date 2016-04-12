@@ -13,6 +13,8 @@ namespace Kuluseuranta.View
   /// </summary>
   public partial class CategoriesWindow : Window
   {
+    #region FIELDS
+
     /// <summary>
     /// Property for Logged User
     /// </summary>
@@ -20,7 +22,9 @@ namespace Kuluseuranta.View
 
     public static ObservableCollection<Category> Categories = new ObservableCollection<Category>();
 
-    #region Constructor
+    #endregion FIELDS
+
+    #region CONSTRUCTORS
 
     /// <summary>
     /// Constructor with Logged User
@@ -40,7 +44,9 @@ namespace Kuluseuranta.View
       txtName.Focus();
     }
 
-    #endregion Constructor
+    #endregion CONSTRUCTORS
+
+    #region METHODS
 
     private void FillTypeCombo()
     {
@@ -49,6 +55,32 @@ namespace Kuluseuranta.View
       types.Add(Guid.Empty, Localization.Language.CommonForAll);
       cboTypes.ItemsSource = types;
     }
+
+    private bool HasDetailsErrors(Category category)
+    {
+      bool errors = false;
+      string message = "";
+      TextBox txt = null;
+
+      if (string.IsNullOrWhiteSpace(category.Name))
+      {
+        txt = txtName;
+        message = Localization.Language.CategoryIsMissing;
+        errors = true;
+      }
+
+      if (errors)
+      {
+        MessageBox.Show(string.Format(Localization.Language.CannotSaveBecauseX, message));
+        txt.Focus();
+      }
+
+      return errors;
+    }
+
+    #endregion METHODS
+
+    #region EVENT HANDLERS
 
     private void btnRefresh_Click(object sender, RoutedEventArgs e)
     {
@@ -226,30 +258,25 @@ namespace Kuluseuranta.View
       }
     }
 
-    private bool HasDetailsErrors(Category category)
-    {
-      bool errors = false;
-      string message = "";
-      TextBox txt = null;
-
-      if (string.IsNullOrWhiteSpace(category.Name))
-      {
-        txt = txtName;
-        message = Localization.Language.CategoryIsMissing;
-        errors = true;
-      }
-
-      if (errors)
-      {
-        MessageBox.Show(string.Format(Localization.Language.CannotSaveBecauseX, message));
-        txt.Focus();
-      }
-
-      return errors;
-    }
-
     private void trvCategories_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
     {
+      if (CategoryMaintenance.IsDirty)
+      {
+        MessageBoxResult result = MessageBox.Show(
+          Localization.Language.ChangesAreNotSavedYetSaveNowMessage, Localization.Language.UnsavedChanges,
+          MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+        if (result == MessageBoxResult.Yes)
+        {
+          btnSave_Click(this, null);
+        }
+        else
+        {
+          Category current = (Category)spCategory.DataContext;
+          current.Status = Status.Unchanged;
+        }
+      }
+
       Category category = (Category)trvCategories.SelectedItem;
 
       if (category.Id == Guid.Empty)
@@ -292,6 +319,6 @@ namespace Kuluseuranta.View
       }
     }
 
-    
+    #endregion EVENT HANDLERS
   }
 }

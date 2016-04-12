@@ -1,7 +1,7 @@
 ﻿/*
 * Copyright (C) JAMK/IT/Mika Mähönen
 * This file is part of the IIO11300 course's final project.
-* Created: 24.3.2016 Modified: 4.4.2016
+* Created: 24.3.2016 Modified: 11.4.2016
 * Authors: Mika Mähönen (K6058), Esa Salmikangas
 */
 using Kuluseuranta.DB;
@@ -38,7 +38,7 @@ namespace Kuluseuranta.BL
       get { return payments.ToList().Exists(p => p.Status == Status.Deleted || p.Status == Status.Created || p.Status == Status.Modified); }
     }
 
-    #endregion
+    #endregion PROPERTIES
 
     #region METHODS
 
@@ -64,8 +64,8 @@ namespace Kuluseuranta.BL
           payment.DueDate = row.IsNull(3) ? (DateTime?)null : row.Field<DateTime>(3);
           payment.PaidDate = row.IsNull(4) ? (DateTime?)null : row.Field<DateTime>(4);
           payment.Amount = row.IsNull(5) ? 0 : row.Field<double>(5);
-          payment.CategoryId = row.Field<Guid>(6);
-          payment.SubCategoryId = row.Field<Guid>(7);
+          payment.CategoryId = row.Field<Guid?>(6);
+          payment.SubCategoryId = row.Field<Guid?>(7);
           payment.Notes = row.Field<string>(8);
           payment.Created = row.Field<DateTime>(9);
           payment.CreatorId = row.Field<Guid>(10);
@@ -94,7 +94,13 @@ namespace Kuluseuranta.BL
         if (payment.Id == Guid.Empty) payment.Id = Guid.NewGuid();
         payment.Created = DateTime.Now;
         payment.CreatorId = LoggedUser.Id;
-        return DBPayments.CreatePayment(payment);
+
+        int c = DBPayments.CreatePayment(payment);
+        if (c > 0)
+        {
+          payment.Status = Status.Unchanged;
+        }
+        return c;
       }
       catch (Exception)
       {
@@ -113,7 +119,13 @@ namespace Kuluseuranta.BL
       {
         payment.Modified = DateTime.Now;
         payment.ModifierId = LoggedUser.Id;
-        return DBPayments.UpdatePayment(payment);
+
+        int c = DBPayments.UpdatePayment(payment);
+        if (c > 0)
+        {
+          payment.Status = Status.Unchanged;
+        }
+        return c;
       }
       catch (Exception)
       {
@@ -211,6 +223,6 @@ namespace Kuluseuranta.BL
       }
     }
 
-    #endregion
+    #endregion METHODS
   }
 }

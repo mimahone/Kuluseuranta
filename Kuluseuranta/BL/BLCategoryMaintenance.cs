@@ -1,7 +1,7 @@
 ﻿/*
 * Copyright (C) JAMK/IT/Mika Mähönen
 * This file is part of the IIO11300 course's final project.
-* Created: 24.3.2016 Modified: 4.4.2016
+* Created: 24.3.2016 Modified: 11.4.2016
 * Authors: Mika Mähönen (K6058), Esa Salmikangas
 */
 using Kuluseuranta.DB;
@@ -38,7 +38,7 @@ namespace Kuluseuranta.BL
       get { return categories.ToList().Exists(p => p.Status == Status.Deleted || p.Status == Status.Created || p.Status == Status.Modified); }
     }
 
-    #endregion
+    #endregion PROPERTIES
 
     #region METHODS
 
@@ -93,7 +93,13 @@ namespace Kuluseuranta.BL
         if (category.Id == Guid.Empty) category.Id = Guid.NewGuid();
         category.Created = DateTime.Now;
         category.CreatorId = LoggedUser.Id;
-        return DBCategories.CreateCategory(category);
+
+        int c = DBCategories.CreateCategory(category);
+        if (c > 0)
+        {
+          category.Status = Status.Unchanged;
+        }
+        return c;
       }
       catch (Exception)
       {
@@ -112,7 +118,13 @@ namespace Kuluseuranta.BL
       {
         category.Modified = DateTime.Now;
         category.ModifierId = LoggedUser.Id;
-        return DBCategories.UpdateCategory(category);
+
+        int c = DBCategories.UpdateCategory(category);
+        if (c > 0)
+        {
+          category.Status = Status.Unchanged;
+        }
+        return c;
       }
       catch (Exception)
       {
@@ -211,6 +223,6 @@ namespace Kuluseuranta.BL
       }
     }
 
-    #endregion
+    #endregion METHODS
   }
 }

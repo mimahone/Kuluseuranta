@@ -72,7 +72,7 @@ namespace Kuluseuranta.Objects
       }
     }
 
-    #endregion
+    #endregion PROPERTIES
 
     #region CONSTRUCTORS
 
@@ -90,6 +90,6 @@ namespace Kuluseuranta.Objects
       Id = id;
     }
 
-    #endregion
+    #endregion CONSTRUCTORS
   }
 }

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Kuluseuranta.View"
         xmlns:resx="clr-namespace:Kuluseuranta.Localization"
         mc:Ignorable="d"
-        Title="{x:Static resx:Language.PaymentsEntering}" Height="600" Width="800" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
+        Title="{x:Static resx:Language.PaymentsEntering}" Height="650" Width="800" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
 
     <Window.Resources>
         <!-- Malli tiedon esittämistä varten -->
@@ -95,7 +95,7 @@
                     <DatePicker Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" SelectedDate="{Binding PaidDate, Mode=TwoWay}" DisplayDate="{Binding DateTime.Now}" />
 
                     <TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static resx:Language.Amount}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <TextBox Grid.Row="4" Grid.Column="1" Margin="10" Text="{Binding Amount, Mode=TwoWay, StringFormat=c, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Grid.Row="4" Grid.Column="1" Margin="10" Width="100" HorizontalAlignment="Left" Text="{Binding Amount, Mode=TwoWay, StringFormat=c, UpdateSourceTrigger=PropertyChanged}" />
 
                     <TextBlock Grid.Row="5" Grid.Column="0" Text="{x:Static resx:Language.Category}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
                     <ComboBox Grid.Row="5" Grid.Column="1" x:Name="cboCategory" Margin="10"

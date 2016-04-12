@@ -1,7 +1,7 @@
 ﻿/*
 * Copyright (C) JAMK/IT/Mika Mähönen
 * This file is part of the IIO11300 course's final project.
-* Created: 24.3.2016 Modified: 1.4.2016
+* Created: 24.3.2016 Modified: 11.4.2016
 * Authors: Mika Mähönen (K6058), Esa Salmikangas
 */
 using System;
@@ -13,6 +13,8 @@ namespace Kuluseuranta.Objects
   /// </summary>
   public class SearchOptions
   {
+    #region PROPERTIES
+
     /// <summary>
     /// Property for UserId option
     /// </summary>
@@ -37,5 +39,7 @@ namespace Kuluseuranta.Objects
     /// Property for SubCategoryId option
     /// </summary>
     public Guid? SubCategoryId { get; set; }
+
+    #endregion PROPERTIES
   }
 }

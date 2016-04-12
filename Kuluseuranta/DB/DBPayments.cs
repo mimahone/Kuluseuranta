@@ -1,7 +1,7 @@
 ﻿/*
 * Copyright (C) JAMK/IT/Mika Mähönen
 * This file is part of the IIO11300 course's final project.
-* Created: 24.3.2016 Modified: 1.4.2016
+* Created: 24.3.2016 Modified: 11.4.2016
 * Authors: Mika Mähönen (K6058), Esa Salmikangas
 */
 using Kuluseuranta.Objects;
@@ -46,7 +46,7 @@ FROM
 WHERE
   OwnerID = @OwnerId
 ORDER BY
-  DueDate DESC
+  Paid DESC
 ";
       try
       {
@@ -54,26 +54,6 @@ ORDER BY
         {
           SqlCommand command = new SqlCommand(sql, connection);
           command.Parameters.AddWithValue("@OwnerId", options.UserId);
-
-          //if (options.StartDate.HasValue)
-          //{
-          //  command.Parameters.AddWithValue("@StartDate", options.StartDate.Value);
-          //}
-
-          //if (options.EndDate.HasValue)
-          //{
-          //  command.Parameters.AddWithValue("@EndDate", options.EndDate.Value);
-          //}
-
-          //if (options.CategoryId.HasValue)
-          //{
-          //  command.Parameters.AddWithValue("@CategoryId", options.CategoryId.Value);
-          //}
-
-          //if (options.SubCategoryId.HasValue)
-          //{
-          //  command.Parameters.AddWithValue("@SubCategoryId", options.SubCategoryId.Value);
-          //}
 
           SqlDataAdapter adapter = new SqlDataAdapter(command);
           DataTable table = new DataTable("Payments");
@@ -130,12 +110,26 @@ VALUES (
           command.Parameters.AddWithValue("@Id", payment.Id);
           command.Parameters.AddWithValue("@OwnerId", payment.OwnerId);
           command.Parameters.AddWithValue("@Payor", payment.Payor);
-          command.Parameters.AddWithValue("@DueDate", payment.DueDate);
-          command.Parameters.AddWithValue("@PaidDate", payment.PaidDate);
+
+          if (payment.DueDate.HasValue)
+            command.Parameters.Add("@DueDate", SqlDbType.DateTime).Value = payment.DueDate;
+          else
+            command.Parameters.Add("@DueDate", SqlDbType.DateTime).Value = DBNull.Value;
+
+          command.Parameters.AddWithValue("@PaidDate", payment.PaidDate.Value);
           command.Parameters.AddWithValue("@Amount", payment.Amount);
           command.Parameters.AddWithValue("@Notes", (payment.Notes == null ? "" : payment.Notes));
-          command.Parameters.AddWithValue("@CategoryId", payment.CategoryId);
-          command.Parameters.AddWithValue("@SubCategoryId", payment.SubCategoryId);
+
+          if (payment.CategoryId == null || payment.CategoryId == Guid.Empty)
+            command.Parameters.Add("@CategoryId", SqlDbType.UniqueIdentifier).Value = DBNull.Value;
+          else
+            command.Parameters.Add("@CategoryId", SqlDbType.UniqueIdentifier).Value = payment.CategoryId;
+
+          if (payment.SubCategoryId == null || payment.SubCategoryId == Guid.Empty)
+            command.Parameters.Add("@SubCategoryId", SqlDbType.UniqueIdentifier).Value = DBNull.Value;
+          else
+            command.Parameters.Add("@SubCategoryId", SqlDbType.UniqueIdentifier).Value = payment.SubCategoryId;
+
           command.Parameters.AddWithValue("@Created", payment.Created);
           command.Parameters.AddWithValue("@CreatorId", payment.CreatorId);
 
@@ -187,12 +181,26 @@ WHERE
           command.Parameters.AddWithValue("@Id", payment.Id);
           command.Parameters.AddWithValue("@OwnerId", payment.OwnerId);
           command.Parameters.AddWithValue("@Payor", payment.Payor);
-          command.Parameters.AddWithValue("@DueDate", payment.DueDate);
+
+          if (payment.DueDate.HasValue)
+            command.Parameters.Add("@DueDate", SqlDbType.DateTime).Value = payment.DueDate;
+          else
+            command.Parameters.Add("@DueDate", SqlDbType.DateTime).Value = DBNull.Value;
+
           command.Parameters.AddWithValue("@PaidDate", payment.PaidDate);
           command.Parameters.AddWithValue("@Amount", payment.Amount);
           command.Parameters.AddWithValue("@Notes", (payment.Notes == null ? "" : payment.Notes));
-          command.Parameters.AddWithValue("@CategoryId", payment.CategoryId);
-          command.Parameters.AddWithValue("@SubCategoryId", payment.SubCategoryId);
+
+          if (payment.CategoryId == null || payment.CategoryId == Guid.Empty)
+            command.Parameters.Add("@CategoryId", SqlDbType.UniqueIdentifier).Value = DBNull.Value;
+          else
+            command.Parameters.Add("@CategoryId", SqlDbType.UniqueIdentifier).Value = payment.CategoryId;
+
+          if (payment.SubCategoryId == null || payment.SubCategoryId == Guid.Empty)
+            command.Parameters.Add("@SubCategoryId", SqlDbType.UniqueIdentifier).Value = DBNull.Value;
+          else
+            command.Parameters.Add("@SubCategoryId", SqlDbType.UniqueIdentifier).Value = payment.SubCategoryId;
+
           command.Parameters.AddWithValue("@Modified", payment.Modified);
           command.Parameters.AddWithValue("@ModifierId", payment.ModifierId);
 

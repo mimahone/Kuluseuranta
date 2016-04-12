@@ -495,4 +495,10 @@
   <data name="RootCategoryCannotBeDeleted" xml:space="preserve">
     <value>Pääkategoriaa ei voi poistaa</value>
   </data>
+  <data name="PaidDateIsMissing" xml:space="preserve">
+    <value>maksupäivä puuttuu</value>
+  </data>
+  <data name="DataRetrievedDetailsMessage" xml:space="preserve">
+    <value>Tiedot haettu aikaväliltä: {0}-{1}. Kategorian valinnat: {2}/{3}</value>
+  </data>
 </root>

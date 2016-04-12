@@ -448,6 +448,15 @@ namespace Kuluseuranta.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tiedot haettu aikaväliltä: {0}-{1}. Kategorian valinnat: {2}/{3}.
+        /// </summary>
+        public static string DataRetrievedDetailsMessage {
+            get {
+                return ResourceManager.GetString("DataRetrievedDetailsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Poista kategoria.
         /// </summary>
         public static string DeleteCategory {
@@ -750,6 +759,15 @@ namespace Kuluseuranta.Localization {
         public static string Paid {
             get {
                 return ResourceManager.GetString("Paid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to maksupäivä puuttuu.
+        /// </summary>
+        public static string PaidDateIsMissing {
+            get {
+                return ResourceManager.GetString("PaidDateIsMissing", resourceCulture);
             }
         }
         

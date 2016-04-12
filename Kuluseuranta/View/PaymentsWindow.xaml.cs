@@ -13,12 +13,16 @@ namespace Kuluseuranta.View
   /// </summary>
   public partial class PaymentsWindow : Window
   {
+    #region PROPERTIES
+
     /// <summary>
     /// Property for Logged User
     /// </summary>
     private User LoggedUser { get; set; }
 
-    #region Constructor
+    #endregion PROPERTIES
+
+    #region CONSTRUCTORS
 
     /// <summary>
     /// Constructor with Logged User
@@ -37,13 +41,48 @@ namespace Kuluseuranta.View
       btnRefresh_Click(this, null);
     }
 
-    #endregion Constructor
+    #endregion CONSTRUCTORS
+
+    #region METHODS
 
     private void FillCategoryCombo()
     {
       CategoryMaintenance.RefreshCategories(LoggedUser.Id);
       cboCategory.ItemsSource = CategoryMaintenance.CategoryList;
     }
+
+    private bool HasDetailsErrors(Payment payment)
+    {
+      bool errors = false;
+      string message = "";
+      //TextBox txt = null;
+
+      if (string.IsNullOrWhiteSpace(payment.Payor))
+      {
+        //txt = txtPayor;
+        message = Localization.Language.PayorIsMissing;
+        errors = true;
+      }
+
+      if (payment.PaidDate == null)
+      {
+        //txt = txtPayor;
+        message = Localization.Language.PaidDateIsMissing;
+        errors = true;
+      }
+
+      if (errors)
+      {
+        MessageBox.Show(string.Format(Localization.Language.CannotSaveBecauseX, message));
+        //txt.Focus();
+      }
+
+      return errors;
+    }
+
+    #endregion METHODS
+
+    #region EVENT HANDLERS
 
     private void btnRefresh_Click(object sender, RoutedEventArgs e)
     {
@@ -75,6 +114,7 @@ namespace Kuluseuranta.View
       Payment newPayment = new Payment();
       newPayment.Status = Status.Created;
       newPayment.OwnerId = LoggedUser.Id;
+      newPayment.CreatorId = LoggedUser.Id;
       cboCategory.SelectedIndex = -1;
       cboSubCategory.SelectedIndex = -1;
       cboSubCategory.ItemsSource = null;
@@ -145,9 +185,10 @@ namespace Kuluseuranta.View
         payment.CategoryId = (cboCategory.SelectedValue == null ? Guid.Empty : (Guid)cboCategory.SelectedValue);
         payment.SubCategoryId = (cboSubCategory.SelectedValue == null ? Guid.Empty : (Guid)cboSubCategory.SelectedValue);
 
+        PaymentsEntering.LoggedUser = LoggedUser;
+
         if (payment.Id != Guid.Empty)
         {
-          payment.Status = Status.Modified;
           PaymentsEntering.UpdatePayment(payment);
           lbMessages.Content = string.Format(Localization.Language.PaymentsXDetailsAreUpdated, payment.DisplayName);
         }
@@ -166,30 +207,25 @@ namespace Kuluseuranta.View
       }
     }
 
-    private bool HasDetailsErrors(Payment payment)
-    {
-      bool errors = false;
-      string message = "";
-      TextBox txt = null;
-
-      if (string.IsNullOrWhiteSpace(payment.Payor))
-      {
-        txt = txtPayor;
-        message = Localization.Language.PayorIsMissing;
-        errors = true;
-      }
-
-      if (errors)
-      {
-        MessageBox.Show(string.Format(Localization.Language.CannotSaveBecauseX, message));
-        txt.Focus();
-      }
-
-      return errors;
-    }
-
     private void lstPayments_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+      if (PaymentsEntering.IsDirty)
+      {
+        MessageBoxResult result = MessageBox.Show(
+          Localization.Language.ChangesAreNotSavedYetSaveNowMessage, Localization.Language.UnsavedChanges,
+          MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+        if (result == MessageBoxResult.Yes)
+        {
+          btnSave_Click(this, null);
+        }
+        else
+        {
+          Payment current = (Payment)spPayment.DataContext;
+          current.Status = Status.Unchanged;
+        }
+      }
+
       if (lstPayments.SelectedItem != null)
       {
         Payment payment = (Payment)lstPayments.SelectedItem;
@@ -224,5 +260,7 @@ namespace Kuluseuranta.View
         cboSubCategory.ItemsSource = CategoryMaintenance.CategoryList;
       }
     }
+
+    #endregion EVENT HANDLERS
   }
 }
