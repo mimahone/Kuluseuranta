@@ -352,7 +352,7 @@
     <value>Rivejä: {0} kpl</value>
   </data>
   <data name="RowsSumX" xml:space="preserve">
-    <value>Summa: {0} €</value>
+    <value>Summa: {0}</value>
   </data>
   <data name="SameNameCategoryListedAlready" xml:space="preserve">
     <value>Saman niminen kategoria on jo listalla!</value>
@@ -414,8 +414,8 @@
   <data name="UnsavedChanges" xml:space="preserve">
     <value>Tallentamattomia muutoksia</value>
   </data>
-  <data name="UserIsDeleted" xml:space="preserve">
-    <value>Käyttäjä on poistettu</value>
+  <data name="UserXIsDeleted" xml:space="preserve">
+    <value>Käyttäjä {0} on poistettu</value>
   </data>
   <data name="UserListUpdatedAtX" xml:space="preserve">
     <value>Käyttäjät on haettu {0}</value>

@@ -150,9 +150,8 @@ namespace Kuluseuranta.View
         {
           if (user.Id != Guid.Empty)
           {
-            if (UserManagement.DeleteUser(user) > 0)
+            if (UserManagement.ArchiveUser(user) > 0)
             {
-              user.Status = Status.Deleted;
               ((ObservableCollection<User>)lstUsers.DataContext).Remove(user);
             }
           }
@@ -161,7 +160,7 @@ namespace Kuluseuranta.View
             ((ObservableCollection<User>)lstUsers.DataContext).Remove(user);
           }
 
-          lbMessages.Content = Localization.Language.UserIsDeleted;
+          lbMessages.Content = string.Format(Localization.Language.UserXIsDeleted, user.FullName);
         }
       }
       catch (Exception ex)

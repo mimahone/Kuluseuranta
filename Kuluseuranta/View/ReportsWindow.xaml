@@ -49,6 +49,11 @@
 
             <!--<DataGrid x:Name="dgReports" AutoGenerateColumns="True" ItemsSource="{Binding}"/>-->
             <DataGrid x:Name="dgReports" AutoGenerateColumns="False" ItemsSource="{Binding}">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridRow">
+                        <EventSetter Event="MouseDoubleClick" Handler="Row_DoubleClick"/>
+                    </Style>
+                </DataGrid.Resources>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="{x:Static resx:Language.Payor}" Binding="{Binding Payor, Mode=OneWay}" />
                     <DataGridTextColumn Header="{x:Static resx:Language.DueDate}" Binding="{Binding DueDate, Mode=OneWay, StringFormat=d}" />

@@ -28,11 +28,19 @@ namespace Kuluseuranta.View
     /// Constructor with Logged User
     /// </summary>
     /// <param name="loggedUser">Logged User</param>
-    public PaymentsWindow(User loggedUser)
+    /// <param name="payment">Default payment to select</param>
+    public PaymentsWindow(User loggedUser, Payment payment = null)
     {
       InitializeComponent();
       LoggedUser = loggedUser;
       IniMyStuff();
+
+      if (payment != null)
+      {
+        //TODO:...
+        //lstPayments.SelectedItem = payment;
+        //lstPayments.ScrollIntoView(lstPayments.SelectedItem);
+      }
     }
 
     private void IniMyStuff()

@@ -34,6 +34,7 @@ namespace Kuluseuranta.View
     {
       InitializeComponent();
       LoggedUser = loggedUser;
+      CategoryMaintenance.LoggedUser = loggedUser;
       IniMyStuff();
     }
 
@@ -194,7 +195,7 @@ namespace Kuluseuranta.View
         {
           if (category.Id != Guid.Empty)
           {
-            if (CategoryMaintenance.DeleteCategory(category) > 0)
+            if (CategoryMaintenance.ArchiveCategory(category) > 0)
             {
               btnRefresh_Click(this, null);
             }
@@ -203,7 +204,6 @@ namespace Kuluseuranta.View
           {
             btnRefresh_Click(this, null);
           }
-
           
           if (category.ParentId == Guid.Empty)
           {

@@ -961,7 +961,7 @@ namespace Kuluseuranta.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Summa: {0} €.
+        ///   Looks up a localized string similar to Summa: {0}.
         /// </summary>
         public static string RowsSumX {
             get {
@@ -1159,15 +1159,6 @@ namespace Kuluseuranta.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Käyttäjä on poistettu.
-        /// </summary>
-        public static string UserIsDeleted {
-            get {
-                return ResourceManager.GetString("UserIsDeleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Käyttäjät on haettu {0}.
         /// </summary>
         public static string UserListUpdatedAtX {
@@ -1209,6 +1200,15 @@ namespace Kuluseuranta.Localization {
         public static string UsersXDetailsAreUpdated {
             get {
                 return ResourceManager.GetString("UsersXDetailsAreUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Käyttäjä {0} on poistettu.
+        /// </summary>
+        public static string UserXIsDeleted {
+            get {
+                return ResourceManager.GetString("UserXIsDeleted", resourceCulture);
             }
         }
     }

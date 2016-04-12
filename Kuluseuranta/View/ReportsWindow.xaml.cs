@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace Kuluseuranta.View
 {
@@ -118,7 +119,7 @@ namespace Kuluseuranta.View
       if (cboCategory.SelectedItem != null)
       {
         Category category = (Category)cboCategory.SelectedItem;
-        CategoryMaintenance.RefreshCategories(LoggedUser.Id, category.Id);
+        CategoryMaintenance.RefreshCategories(LoggedUser.Id, category.Id, true);
         var list = CategoryMaintenance.CategoryList;
         list.Insert(0, new Category(Guid.Empty) { Name = Localization.Language.AllSubCategories });
         cboSubCategory.ItemsSource = list;
@@ -165,7 +166,14 @@ namespace Kuluseuranta.View
       }
 
       lbRows.Content = string.Format(Localization.Language.RowsCountX, view2.Count);
-      lbTotal.Content = string.Format(Localization.Language.RowsSumX, sum);
+      lbTotal.Content = string.Format(Localization.Language.RowsSumX, string.Format("{0:C}", sum));
+    }
+
+    private void Row_DoubleClick(object sender, MouseButtonEventArgs e)
+    {
+      PaymentsWindow w = new PaymentsWindow(LoggedUser, (Payment)(sender as DataGridRow).Item);
+      w.ShowDialog();
+      btnGet_Click(this, null);
     }
 
     #endregion EVENT HANDLERS

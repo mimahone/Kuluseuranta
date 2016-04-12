@@ -47,7 +47,8 @@ namespace Kuluseuranta.BL
     /// </summary>
     /// <param name="userId">User Id</param>
     /// <param name="parentId">Parent Id (default Empty Guid)</param>
-    public static void RefreshCategories(Guid userId, Guid parentId = default(Guid))
+    /// <param name="includeArchived">If true archived users will be listed too (default false)</param>
+    public static void RefreshCategories(Guid userId, Guid parentId = default(Guid), bool includeArchived = false)
     {
       try
       {
@@ -56,29 +57,51 @@ namespace Kuluseuranta.BL
         DataTable dt = DBCategories.GetCategories(userId, parentId);
 
         // ORM
-        Category category;
 
-        foreach (DataRow row in dt.Rows)
+        if (includeArchived)
         {
-          category = new Category(row.Field<Guid>(0));
-          category.ParentId = row.Field<Guid>(1);
-          category.Level = row.Field<int>(2);
-          category.OwnerId = row.Field<Guid>(3);
-          category.Name = row.Field<string>(4);
-          category.Description = row.Field<string>(5);
-          category.Created = row.Field<DateTime>(6);
-          category.CreatorId = row.Field<Guid>(7);
-          category.Modified = row.IsNull(8) ? (DateTime?)null : row.Field<DateTime>(8);
-          category.ModifierId = row.IsNull(9) ? Guid.Empty : row.Field<Guid>(9);
-          category.Archived = row.IsNull(10) ? (DateTime?)null : row.Field<DateTime>(10);
-          category.ArchiverId = row.IsNull(11) ? Guid.Empty : row.Field<Guid>(11);
-          categories.Add(category);
+          foreach (DataRow row in dt.Rows)
+          {
+            categories.Add(MakeCategory(row));
+          }
+        }
+        else
+        {
+          foreach (DataRow row in dt.Select("Archived IS NULL"))
+          {
+            categories.Add(MakeCategory(row));
+          }
         }
       }
       catch (Exception ex)
       {
         throw ex;
       }
+    }
+
+    /// <summary>
+    /// Makes Category object of DataRow
+    /// </summary>
+    /// <param name="row">DataRow containing category data</param>
+    /// <returns>Category object</returns>
+    private static Category MakeCategory(DataRow row)
+    {
+      if (row == null) return null;
+
+      Category category = new Category(row.Field<Guid>(0));
+      category.ParentId = row.Field<Guid>(1);
+      category.Level = row.Field<int>(2);
+      category.OwnerId = row.Field<Guid>(3);
+      category.Name = row.Field<string>(4);
+      category.Description = row.Field<string>(5);
+      category.Created = row.Field<DateTime>(6);
+      category.CreatorId = row.Field<Guid>(7);
+      category.Modified = row.IsNull(8) ? (DateTime?)null : row.Field<DateTime>(8);
+      category.ModifierId = row.IsNull(9) ? Guid.Empty : row.Field<Guid>(9);
+      category.Archived = row.IsNull(10) ? (DateTime?)null : row.Field<DateTime>(10);
+      category.ArchiverId = row.IsNull(11) ? Guid.Empty : row.Field<Guid>(11);
+
+      return category;
     }
 
     /// <summary>

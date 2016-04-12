@@ -45,7 +45,8 @@ namespace Kuluseuranta.BL
     /// <summary>
     /// Refresh Users List
     /// </summary>
-    public static void RefreshUsers()
+    /// <param name="includeArchived">If true archived users will be listed too (default false)</param>
+    public static void RefreshUsers(bool includeArchived = false)
     {
       try
       {
@@ -56,14 +57,24 @@ namespace Kuluseuranta.BL
 
         if (LoggedUser.UserRole != UserRole.AdminUser)
         {
-          DataRow[] row = dt.Select(string.Format("UserId='{0}'", LoggedUser.Id));
-          users.Add(MakeUser(row[0]));
+          DataRow[] rows = dt.Select(string.Format("UserId='{0}'", LoggedUser.Id));
+          users.Add(MakeUser(rows[0]));
         }
         else
         {
-          foreach (DataRow row in dt.Rows)
+          if (includeArchived)
           {
-            users.Add(MakeUser(row));
+            foreach (DataRow row in dt.Rows)
+            {
+              users.Add(MakeUser(row));
+            }
+          }
+          else
+          {
+            foreach (DataRow row in dt.Select("Archived IS NULL"))
+            {
+              users.Add(MakeUser(row));
+            }
           }
         }
       }

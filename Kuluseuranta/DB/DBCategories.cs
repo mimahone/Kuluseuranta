@@ -40,13 +40,13 @@ namespace Kuluseuranta.DB
     {
       const string sql = @"
 SELECT 
-  CategoryID, ParentID, CategoryLevel, OwnerID, Name, Description,
+  CategoryId, ParentId, CategoryLevel, OwnerId, Name, Description,
   Created, CreatorId, Modified, ModifierId, Archived, ArchiverId
 FROM 
   Categories
 WHERE
   ParentId = @ParentId AND
-  (OwnerID IN ('00000000-0000-0000-0000-000000000000', @OwnerId))
+  (OwnerId IN ('00000000-0000-0000-0000-000000000000', @OwnerId))
 ORDER BY
   Name
 ";
@@ -82,10 +82,10 @@ ORDER BY
       {
         const string sql = @"
 INSERT INTO Categories (
-  CategoryID,
-  ParentID,
+  CategoryId,
+  ParentId,
   CategoryLevel,
-  OwnerID,
+  OwnerId,
   Name,
   Description,
   Created,
@@ -151,7 +151,7 @@ UPDATE Categories SET
   Modified = @Modified,
   ModifierId = @ModifierId
 WHERE
-  CategoryID = @Id
+  CategoryId = @Id
 ";
         using (SqlConnection connection = new SqlConnection(ConnectionString))
         {
@@ -191,7 +191,7 @@ WHERE
     {
       try
       {
-        const string cmdText = @"DELETE FROM Categories WHERE CategoryID = @Id OR ParentID = @Id";
+        const string cmdText = @"DELETE FROM Categories WHERE CategoryId = @Id OR ParentId = @Id";
 
         using (SqlConnection connection = new SqlConnection(ConnectionString))
         {
@@ -226,7 +226,14 @@ WHERE
     {
       try
       {
-        const string cmdText = @"UPDATE Categories SET Archived = GETDATE(), ArchiverId = @ArchiverId WHERE CategoryID = @Id";
+        const string cmdText = @"
+UPDATE Categories SET
+  Archived = GETDATE(),
+  ArchiverId = @ArchiverId
+WHERE
+  Archived IS NULL AND
+  (CategoryId = @Id OR ParentId = @Id)
+";
         using (SqlConnection connection = new SqlConnection(ConnectionString))
         {
           SqlCommand command = new SqlCommand(cmdText, connection);
