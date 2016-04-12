@@ -15,6 +15,15 @@ namespace Kuluseuranta.View
   /// </summary>
   public partial class UsersWindow : Window
   {
+    #region PROPERTIES
+
+    /// <summary>
+    /// Property for Logged User
+    /// </summary>
+    private User LoggedUser { get; set; }
+
+    #endregion PROPERTIES
+
     #region CONSTRUCTORS
 
     /// <summary>
@@ -24,6 +33,7 @@ namespace Kuluseuranta.View
     public UsersWindow(User loggedUser)
     {
       InitializeComponent();
+      LoggedUser = loggedUser;
       UserManagement.LoggedUser = loggedUser;
       IniMyStuff();
     }
@@ -32,6 +42,14 @@ namespace Kuluseuranta.View
     {
       FillUserRoleCombo();
       btnRefresh_Click(this, null);
+
+      if (LoggedUser.UserRole != UserRole.AdminUser)
+      {
+        btnNew.Visibility = Visibility.Collapsed;
+        btnDelete.Visibility = Visibility.Collapsed;
+        cboUserRole.IsEnabled = false;
+      }
+
       txtFirstName.Focus();
     }
 

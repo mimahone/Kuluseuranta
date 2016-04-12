@@ -119,6 +119,7 @@ namespace Kuluseuranta.View
       cboSubCategory.SelectedIndex = -1;
       cboSubCategory.ItemsSource = null;
       spPayment.DataContext = newPayment;
+      spPayment.Visibility = Visibility.Visible;
       txtPayor.Focus();
       lbMessages.Content = Localization.Language.AddNewPaymentMessage;
     }
@@ -232,6 +233,8 @@ namespace Kuluseuranta.View
         spPayment.DataContext = payment;
         cboCategory.SelectedValue = payment.CategoryId;
         cboSubCategory.SelectedValue = payment.SubCategoryId;
+        btnDelete.Visibility = Visibility.Visible;
+        spPayment.Visibility = Visibility.Visible;
         lbMessages.Content = string.Format(Localization.Language.SelectedPaymentX, payment.DisplayName);
       }
     }

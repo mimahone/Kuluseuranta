@@ -23,7 +23,7 @@
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                 <Button x:Name="btnRefresh" Content="{x:Static resx:Language.GetPayments}" Margin="5" Click="btnRefresh_Click" />
                 <Button x:Name="btnNew" Content="{x:Static resx:Language.AddPayment}" Margin="5" Click="btnNew_Click" />
-                <Button x:Name="btnDelete" Content="{x:Static resx:Language.DeletePayment}" Margin="5" Click="btnDelete_Click"  />
+                <Button x:Name="btnDelete" Content="{x:Static resx:Language.DeletePayment}" Margin="5" Click="btnDelete_Click" Visibility="Collapsed"  />
             </StackPanel>
 
             <!-- Bottom StatusBar -->
@@ -62,7 +62,7 @@
                 <GridSplitter Grid.Column="0" Width="10" HorizontalAlignment="Right" VerticalAlignment="Stretch" />
 
                 <!-- Right Grid for the selection details -->
-                <Grid x:Name="spPayment" Grid.Column="1">
+                <Grid x:Name="spPayment" Grid.Column="1" Visibility="Collapsed">
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />

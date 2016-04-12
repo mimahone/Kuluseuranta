@@ -41,6 +41,12 @@ namespace Kuluseuranta.View
     {
       FillTypeCombo();
       btnRefresh_Click(this, null);
+
+      if (LoggedUser.UserRole != UserRole.AdminUser)
+      {
+        cboTypes.IsEnabled = false;
+      }
+
       txtName.Focus();
     }
 
@@ -148,6 +154,9 @@ namespace Kuluseuranta.View
 
         spCategory.DataContext = newCategory;
         cboTypes.SelectedIndex = 0;
+        txtName.IsReadOnly = false;
+        txtDescription.IsReadOnly = false;
+        btnSave.Visibility = Visibility.Visible;
         txtName.Focus();
       }
       catch (Exception ex)
@@ -282,13 +291,30 @@ namespace Kuluseuranta.View
       if (category.Id == Guid.Empty)
       {
         spCategory.Visibility = Visibility.Hidden;
+        btnNew.Visibility = Visibility.Visible;
         btnDelete.Visibility = Visibility.Hidden;
         lbMessages.Content = Localization.Language.RootCategorySelected;
       }
       else
       {
         spCategory.Visibility = Visibility.Visible;
+        btnNew.Visibility = Visibility.Visible;
         btnDelete.Visibility = Visibility.Visible;
+
+        if (LoggedUser.UserRole != UserRole.AdminUser && category.OwnerId != LoggedUser.Id)
+        {
+          btnDelete.Visibility = Visibility.Collapsed;
+          btnSave.Visibility = Visibility.Collapsed;
+          txtName.IsReadOnly = true;
+          txtDescription.IsReadOnly = true;
+        }
+        else
+        {
+          btnDelete.Visibility = Visibility.Visible;
+          btnSave.Visibility = Visibility.Visible;
+          txtName.IsReadOnly = false;
+          txtDescription.IsReadOnly = false;
+        }
 
         spCategory.DataContext = category;
         cboTypes.SelectedValue = category.OwnerId;

@@ -54,9 +54,17 @@ namespace Kuluseuranta.BL
 
         // ORM
 
-        foreach (DataRow row in dt.Rows)
+        if (LoggedUser.UserRole != UserRole.AdminUser)
         {
-          users.Add(MakeUser(row));
+          DataRow[] row = dt.Select(string.Format("UserId='{0}'", LoggedUser.Id));
+          users.Add(MakeUser(row[0]));
+        }
+        else
+        {
+          foreach (DataRow row in dt.Rows)
+          {
+            users.Add(MakeUser(row));
+          }
         }
       }
       catch (Exception ex)

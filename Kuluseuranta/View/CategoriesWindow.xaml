@@ -16,8 +16,8 @@
             <!-- Top ButtonBar -->
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                 <Button x:Name="btnRefresh" Content="{x:Static resx:Language.GetCategories}" Margin="5" Click="btnRefresh_Click" />
-                <Button x:Name="btnNew" Content="{x:Static resx:Language.AddCategory}" Margin="5" Click="btnNew_Click" />
-                <Button x:Name="btnDelete" Content="{x:Static resx:Language.DeleteCategory}" Margin="5" Click="btnDelete_Click"  />
+                <Button x:Name="btnNew" Content="{x:Static resx:Language.AddCategory}" Margin="5" Click="btnNew_Click" Visibility="Collapsed" />
+                <Button x:Name="btnDelete" Content="{x:Static resx:Language.DeleteCategory}" Margin="5" Click="btnDelete_Click" Visibility="Collapsed"  />
             </StackPanel>
 
             <!-- Bottom StatusBar -->
@@ -52,7 +52,7 @@
                 <GridSplitter Grid.Column="0" Width="10" HorizontalAlignment="Right" VerticalAlignment="Stretch" />
 
                 <!-- Right StackPanel for the selection details -->
-                <Grid x:Name="spCategory" Grid.Column="1">
+                <Grid x:Name="spCategory" Grid.Column="1" Visibility="Hidden">
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -75,7 +75,7 @@
                     <TextBox Grid.Row = "1" Grid.Column="1" x:Name="txtName" Margin="10" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" UseLayoutRounding="True" />
 
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static resx:Language.Description}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <TextBox Grid.Row="2" Grid.Column="1" Margin="10" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" />
+                    <TextBox Grid.Row="2" Grid.Column="1" x:Name="txtDescription" Margin="10" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" />
 
                     <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static resx:Language.Type}" Margin="10,13,0,13" HorizontalAlignment="Left" VerticalAlignment="Top" />
                     <ComboBox Grid.Row="3" Grid.Column="1" x:Name="cboTypes" Margin="10"                               
