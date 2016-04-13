@@ -18,11 +18,6 @@ namespace Kuluseuranta.View
 
     private void IniMyStaff()
     {
-      //Temporarily...
-      LoggedUser = BL.UserManagement.LoginUser("mika.mahonen@live.fi", "k6058");
-      tbLoggedUser.Text = string.Format(Localization.Language.LoggedUserX, LoggedUser.FullName);
-      //...temporarily
-
       if (LoggedUser == null)
       {
         LoginWindow w = new LoginWindow();
