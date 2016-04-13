@@ -8,11 +8,12 @@ namespace Kuluseuranta.View
   /// </summary>
   public partial class MainWindow : Window
   {
-    private User LoggedUser = null;
+    private User LoggedUser { get; set; }
 
-    public MainWindow()
+    public MainWindow(User loggedUser)
     {
       InitializeComponent();
+      LoggedUser = loggedUser;
       IniMyStaff();
     }
 
@@ -35,6 +36,10 @@ namespace Kuluseuranta.View
         btnCategories.IsEnabled = isLogged;
         btnPayments.IsEnabled = isLogged;
         btnReports.IsEnabled = isLogged;
+      }
+      else
+      {
+        tbLoggedUser.Text = string.Format(Localization.Language.LoggedUserX, LoggedUser.FullName);
       }
     }
 

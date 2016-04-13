@@ -39,6 +39,8 @@ namespace Kuluseuranta.View
         }
         else
         {
+          MainWindow w = new MainWindow(LoggedUser);
+          w.Show();
           Close();
         }
       }
