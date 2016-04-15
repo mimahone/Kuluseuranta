@@ -43,6 +43,35 @@ namespace Kuluseuranta.BL
     #region METHODS
 
     /// <summary>
+    /// Makes Payment object of DataRow
+    /// </summary>
+    /// <param name="row">DataRow containing Payment data</param>
+    /// <returns>Payment object</returns>
+    private static Payment makePayment(DataRow row)
+    {
+      if (row == null) return null;
+
+      Payment payment = new Payment(row.Field<Guid>("PaymentId"));
+      payment.OwnerId = row.Field<Guid>("OwnerId");
+      payment.Payor = row.Field<string>("PayorName");
+      payment.DueDate = row.IsNull("DueDate") ? (DateTime?)null : row.Field<DateTime>("DueDate");
+      payment.PaidDate = row.IsNull("Paid") ? (DateTime?)null : row.Field<DateTime>("Paid");
+      payment.ReferenceNumber = row.Field<string>("ReferenceNumber");
+      payment.Amount = row.IsNull("Amount") ? 0 : row.Field<double>("Amount");
+      payment.CategoryId = row.Field<Guid?>("CategoryId");
+      payment.SubCategoryId = row.Field<Guid?>("SubCategoryId");
+      payment.Notes = row.Field<string>("Notes");
+      payment.Created = row.Field<DateTime>("Created");
+      payment.CreatorId = row.Field<Guid>("CreatorId");
+      payment.Modified = row.Field<DateTime?>("Modified");
+      payment.ModifierId = row.IsNull("ModifierId") ? Guid.Empty : row.Field<Guid>("ModifierId");
+      payment.Archived = row.Field<DateTime?>("Archived");
+      payment.ArchiverId = row.IsNull("ArchiverId") ? Guid.Empty : row.Field<Guid>("ArchiverId");
+
+      return payment;
+    }
+
+    /// <summary>
     /// Refresh Payments List
     /// </summary>
     /// <param name="options">Search Options</param>
@@ -54,26 +83,9 @@ namespace Kuluseuranta.BL
         DataTable table = DBPayments.GetPayments(options);
 
         // ORM
-        Payment payment;
-
         foreach (DataRow row in table.Rows)
         {
-          payment = new Payment(row.Field<Guid>(0));
-          payment.OwnerId = row.Field<Guid>(1);
-          payment.Payor = row.Field<string>(2);
-          payment.DueDate = row.IsNull(3) ? (DateTime?)null : row.Field<DateTime>(3);
-          payment.PaidDate = row.IsNull(4) ? (DateTime?)null : row.Field<DateTime>(4);
-          payment.Amount = row.IsNull(5) ? 0 : row.Field<double>(5);
-          payment.CategoryId = row.Field<Guid?>(6);
-          payment.SubCategoryId = row.Field<Guid?>(7);
-          payment.Notes = row.Field<string>(8);
-          payment.Created = row.Field<DateTime>(9);
-          payment.CreatorId = row.Field<Guid>(10);
-          payment.Modified = row.IsNull(11) ? (DateTime?)null : row.Field<DateTime>(11);
-          payment.ModifierId = row.IsNull(12) ? Guid.Empty : row.Field<Guid>(12);
-          payment.Archived = row.IsNull(13) ? (DateTime?)null : row.Field<DateTime>(13);
-          payment.ArchiverId = row.IsNull(14) ? Guid.Empty : row.Field<Guid>(14);
-          payments.Add(payment);
+          payments.Add(makePayment(row));
         }
       }
       catch (Exception ex)

@@ -94,6 +94,7 @@
     <Compile Include="BL\BLCategoryMaintenance.cs" />
     <Compile Include="BL\BLPaymentsEntering.cs" />
     <Compile Include="BL\BLUserManagement.cs" />
+    <Compile Include="DB\BaseDB.cs" />
     <Compile Include="DB\DBPayments.cs" />
     <Compile Include="Objects\SearchOptions.cs" />
     <Compile Include="View\ChangePasswordWindow.xaml.cs">
@@ -113,6 +114,9 @@
     </Compile>
     <Compile Include="DB\DBCategories.cs" />
     <Compile Include="DB\DBUsers.cs" />
+    <Compile Include="View\UserNameWindow.xaml.cs">
+      <DependentUpon>UserNameWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\UsersWindow.xaml.cs">
       <DependentUpon>UsersWindow.xaml</DependentUpon>
     </Compile>
@@ -154,6 +158,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\UserNameWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\UsersWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

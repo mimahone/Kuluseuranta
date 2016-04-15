@@ -62,14 +62,14 @@ namespace Kuluseuranta.BL
         {
           foreach (DataRow row in dt.Rows)
           {
-            categories.Add(MakeCategory(row));
+            categories.Add(makeCategory(row));
           }
         }
         else
         {
           foreach (DataRow row in dt.Select("Archived IS NULL"))
           {
-            categories.Add(MakeCategory(row));
+            categories.Add(makeCategory(row));
           }
         }
       }
@@ -84,22 +84,22 @@ namespace Kuluseuranta.BL
     /// </summary>
     /// <param name="row">DataRow containing category data</param>
     /// <returns>Category object</returns>
-    private static Category MakeCategory(DataRow row)
+    private static Category makeCategory(DataRow row)
     {
       if (row == null) return null;
 
-      Category category = new Category(row.Field<Guid>(0));
-      category.ParentId = row.Field<Guid>(1);
-      category.Level = row.Field<int>(2);
-      category.OwnerId = row.Field<Guid>(3);
-      category.Name = row.Field<string>(4);
-      category.Description = row.Field<string>(5);
-      category.Created = row.Field<DateTime>(6);
-      category.CreatorId = row.Field<Guid>(7);
-      category.Modified = row.IsNull(8) ? (DateTime?)null : row.Field<DateTime>(8);
-      category.ModifierId = row.IsNull(9) ? Guid.Empty : row.Field<Guid>(9);
-      category.Archived = row.IsNull(10) ? (DateTime?)null : row.Field<DateTime>(10);
-      category.ArchiverId = row.IsNull(11) ? Guid.Empty : row.Field<Guid>(11);
+      Category category = new Category(row.Field<Guid>("CategoryId"));
+      category.ParentId = row.Field<Guid>("ParentId");
+      category.Level = row.Field<int>("CategoryLevel");
+      category.OwnerId = row.Field<Guid>("OwnerId");
+      category.Name = row.Field<string>("Name");
+      category.Description = row.Field<string>("Description");
+      category.Created = row.Field<DateTime>("Created");
+      category.CreatorId = row.Field<Guid>("CreatorId");
+      category.Modified = row.Field<DateTime?>("Modified");
+      category.ModifierId = row.IsNull("ModifierId") ? Guid.Empty : row.Field<Guid>("ModifierId");
+      category.Archived = row.Field<DateTime?>("Archived");
+      category.ArchiverId = row.IsNull("ArchiverId") ? Guid.Empty : row.Field<Guid>("ArchiverId");
 
       return category;
     }

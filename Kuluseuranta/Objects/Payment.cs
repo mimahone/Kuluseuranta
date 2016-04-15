@@ -71,6 +71,21 @@ namespace Kuluseuranta.Objects
       }
     }
 
+    private string referenceNumber;
+
+    /// <summary>
+    /// Reference Number property
+    /// </summary>
+    public string ReferenceNumber
+    {
+      get { return referenceNumber; }
+      set
+      {
+        referenceNumber = value;
+        Notify("ReferenceNumber");
+      }
+    }
+
     /// <summary>
     /// Amount property
     /// </summary>

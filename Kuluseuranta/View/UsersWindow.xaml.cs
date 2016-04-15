@@ -259,6 +259,13 @@ namespace Kuluseuranta.View
       }
     }
 
+    private void btnSetUserName_Click(object sender, RoutedEventArgs e)
+    {
+      if (lstUsers.SelectedItem == null) return;
+      UserNameWindow w = new UserNameWindow(LoggedUser, (User)lstUsers.SelectedItem);
+      w.ShowDialog();
+    }
+
     private void btnChangePassword_Click(object sender, RoutedEventArgs e)
     {
       if (lstUsers.SelectedItem == null) return;
@@ -267,5 +274,6 @@ namespace Kuluseuranta.View
     }
 
     #endregion EVENT HANDLERS
+
   }
 }

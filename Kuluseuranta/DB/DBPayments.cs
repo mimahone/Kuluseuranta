@@ -1,7 +1,7 @@
 ﻿/*
 * Copyright (C) JAMK/IT/Mika Mähönen
 * This file is part of the IIO11300 course's final project.
-* Created: 24.3.2016 Modified: 11.4.2016
+* Created: 24.3.2016 Modified: 14.4.2016
 * Authors: Mika Mähönen (K6058), Esa Salmikangas
 */
 using Kuluseuranta.Objects;
@@ -14,20 +14,8 @@ namespace Kuluseuranta.DB
   /// <summary>
   /// Class for Payment Enetering Dao
   /// </summary>
-  public class DBPayments
+  public class DBPayments : BaseDB
   {
-    #region PROPERTIES
-
-    /// <summary>
-    /// Connection String
-    /// </summary>
-    private static string ConnectionString
-    {
-      get { return Properties.Settings.Default.ConnectionString; }
-    }
-
-    #endregion PROPERTIES
-
     #region METHODS
 
     /// <summary>
@@ -39,12 +27,12 @@ namespace Kuluseuranta.DB
     {
       const string sql = @"
 SELECT 
-  PaymentID, OwnerID, PayorName, DueDate, Paid, Amount, CategoryID, SubCategoryID, Notes,
+  PaymentId, OwnerId, PayorName, DueDate, Paid, ReferenceNumber, Amount, CategoryId, SubCategoryId, Notes,
   Created, CreatorId, Modified, ModifierId, Archived, ArchiverId
 FROM 
   Payments
 WHERE
-  OwnerID = @OwnerId
+  OwnerId = @OwnerId
 ORDER BY
   Paid DESC
 ";
@@ -76,15 +64,16 @@ ORDER BY
     {
       const string sql = @"
 INSERT INTO Payments (
-  PaymentID,
-  OwnerID,
+  PaymentId,
+  OwnerId,
   PayorName,
   DueDate,
   Paid,
+  ReferenceNumber,
   Amount,
   Notes,
-  CategoryID,
-  SubCategoryID,  
+  CategoryId,
+  SubCategoryId,  
   Created,
   CreatorId
 )
@@ -94,6 +83,7 @@ VALUES (
   @Payor,
   @DueDate,
   @PaidDate,
+  @ReferenceNumber,
   @Amount,
   @Notes,
   @CategoryId,
@@ -117,8 +107,9 @@ VALUES (
             command.Parameters.Add("@DueDate", SqlDbType.DateTime).Value = DBNull.Value;
 
           command.Parameters.AddWithValue("@PaidDate", payment.PaidDate.Value);
+          command.Parameters.AddWithValue("@ReferenceNumber", ((object)payment.ReferenceNumber) ?? DBNull.Value);
           command.Parameters.AddWithValue("@Amount", payment.Amount);
-          command.Parameters.AddWithValue("@Notes", (payment.Notes == null ? "" : payment.Notes));
+          command.Parameters.AddWithValue("@Notes", ((object)payment.Notes) ?? DBNull.Value);
 
           if (payment.CategoryId == null || payment.CategoryId == Guid.Empty)
             command.Parameters.Add("@CategoryId", SqlDbType.UniqueIdentifier).Value = DBNull.Value;
@@ -164,6 +155,7 @@ UPDATE Payments SET
   PayorName = @Payor,
   DueDate = @DueDate,
   Paid = @PaidDate,
+  ReferenceNumber = @ReferenceNumber,
   Amount = @Amount,
   Notes = @Notes,
   CategoryId = @CategoryId,
@@ -171,7 +163,7 @@ UPDATE Payments SET
   Modified = @Modified,
   ModifierId = @ModifierId
 WHERE
-  PaymentID = @Id
+  PaymentId = @Id
 ";
       try
       {
@@ -188,8 +180,9 @@ WHERE
             command.Parameters.Add("@DueDate", SqlDbType.DateTime).Value = DBNull.Value;
 
           command.Parameters.AddWithValue("@PaidDate", payment.PaidDate);
+          command.Parameters.AddWithValue("@ReferenceNumber", ((object)payment.ReferenceNumber) ?? DBNull.Value);
           command.Parameters.AddWithValue("@Amount", payment.Amount);
-          command.Parameters.AddWithValue("@Notes", (payment.Notes == null ? "" : payment.Notes));
+          command.Parameters.AddWithValue("@Notes", ((object)payment.Notes) ?? DBNull.Value);
 
           if (payment.CategoryId == null || payment.CategoryId == Guid.Empty)
             command.Parameters.Add("@CategoryId", SqlDbType.UniqueIdentifier).Value = DBNull.Value;
@@ -229,7 +222,7 @@ WHERE
     /// <returns>Count of affected rows in database</returns>
     public static int DeletePayment(Guid id)
     {
-      const string cmdText = @"DELETE FROM Payments WHERE PaymentID = @Id";
+      const string cmdText = @"DELETE FROM Payments WHERE PaymentId = @Id";
 
       try
       {
@@ -264,7 +257,7 @@ WHERE
     /// <returns>Count of affected rows in database</returns>
     public static int ArchivePayment(Guid id, Guid archiverId)
     {
-      const string cmdText = @"UPDATE Payments SET Archived = GETDATE(), ArchiverId = @ArchiverId WHERE PaymentID = @Id";
+      const string cmdText = @"UPDATE Payments SET Archived = GETDATE(), ArchiverId = @ArchiverId WHERE PaymentId = @Id";
 
       try
       {

@@ -925,6 +925,15 @@ namespace Kuluseuranta.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Viitenumero.
+        /// </summary>
+        public static string ReferenceNumber {
+            get {
+                return ResourceManager.GetString("ReferenceNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rekisteröidy.
         /// </summary>
         public static string Registration {
@@ -1069,6 +1078,33 @@ namespace Kuluseuranta.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Käyttäjätunnuksen asettaminen.
+        /// </summary>
+        public static string SettingUserName {
+            get {
+                return ResourceManager.GetString("SettingUserName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Käyttäjätunnuksen asettaminen epäonnistui: {0}.
+        /// </summary>
+        public static string SettingUserNameFailedBecauseOfX {
+            get {
+                return ResourceManager.GetString("SettingUserNameFailedBecauseOfX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aseta käyttäjätunnus.
+        /// </summary>
+        public static string SetUserName {
+            get {
+                return ResourceManager.GetString("SetUserName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Alakategoriat.
         /// </summary>
         public static string SubCategories {
@@ -1141,6 +1177,15 @@ namespace Kuluseuranta.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tallennuksessa tapahtui odottamaton virhe!.
+        /// </summary>
+        public static string UnexpectedErrorOccurredWhileSaving {
+            get {
+                return ResourceManager.GetString("UnexpectedErrorOccurredWhileSaving", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tallentamattomia muutoksia.
         /// </summary>
         public static string UnsavedChanges {
@@ -1173,6 +1218,15 @@ namespace Kuluseuranta.Localization {
         public static string UserManagement {
             get {
                 return ResourceManager.GetString("UserManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Käyttäjätunnusta ei voi asettaa koska se on jo käytössä. Valitse toinen käyttäjätunnus..
+        /// </summary>
+        public static string UserNameAlreadyInUseMessage {
+            get {
+                return ResourceManager.GetString("UserNameAlreadyInUseMessage", resourceCulture);
             }
         }
         

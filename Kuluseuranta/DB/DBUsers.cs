@@ -1,7 +1,7 @@
 ﻿/*
 * Copyright (C) JAMK/IT/Mika Mähönen
 * This file is part of the IIO11300 course's final project.
-* Created: 24.3.2016 Modified: 4.4.2016
+* Created: 24.3.2016 Modified: 14.4.2016
 * Authors: Mika Mähönen (K6058), Esa Salmikangas
 */
 using Kuluseuranta.Objects;
@@ -14,17 +14,9 @@ namespace Kuluseuranta.DB
   /// <summary>
   /// Class for User Management Dao
   /// </summary>
-  public class DBUsers
+  public class DBUsers : BaseDB
   {
     #region PROPERTIES
-
-    /// <summary>
-    /// Connection String
-    /// </summary>
-    private static string ConnectionString
-    {
-      get { return Properties.Settings.Default.ConnectionString; }
-    }
 
     /// <summary>
     /// Password salt
@@ -40,7 +32,7 @@ namespace Kuluseuranta.DB
     /// </summary>
     /// <param name="password">Password to Hash</param>
     /// <returns>Hashed password</returns>
-    private static string CalculateHashedPassword(string password)
+    private static string calculateHashedPassword(string password)
     {
       using (var sha = System.Security.Cryptography.SHA256.Create())
       {
@@ -57,7 +49,7 @@ namespace Kuluseuranta.DB
     {
       const string sql = @"
 SELECT 
-  UserID, FirstName, LastName, Email, Notes, IsAdmin,
+  UserId, FirstName, LastName, UserName, Email, Notes, IsAdmin,
   Created, CreatorId, Modified, ModifierId, Archived, ArchiverId
 FROM 
   Users
@@ -117,8 +109,8 @@ VALUES (
           command.Parameters.AddWithValue("@Id", user.Id);
           command.Parameters.AddWithValue("@FirstName", user.FirstName);
           command.Parameters.AddWithValue("@LastName", user.LastName);
-          command.Parameters.AddWithValue("@Email", (user.Email == null ? "" : user.Email));
-          command.Parameters.AddWithValue("@Notes", (user.Notes == null ? "" : user.Notes));
+          command.Parameters.AddWithValue("@Email", ((object)user.Email) ?? DBNull.Value);
+          command.Parameters.AddWithValue("@Notes", ((object)user.Notes) ?? DBNull.Value);
           command.Parameters.AddWithValue("@IsAdmin", (int)user.UserRole);
           command.Parameters.AddWithValue("@Created", user.Created);
           command.Parameters.AddWithValue("@CreatorId", user.CreatorId);
@@ -158,7 +150,7 @@ UPDATE Users SET
   Modified = @Modified,
   ModifierId = @ModifierId
 WHERE
-  UserID = @Id
+  UserId = @Id
 ";
       try
       {
@@ -168,8 +160,8 @@ WHERE
           command.Parameters.AddWithValue("@Id", user.Id);
           command.Parameters.AddWithValue("@FirstName", user.FirstName);
           command.Parameters.AddWithValue("@LastName", user.LastName);
-          command.Parameters.AddWithValue("@Email", (user.Email == null ? "" : user.Email));
-          command.Parameters.AddWithValue("@Notes", (user.Notes == null ? "" : user.Notes));
+          command.Parameters.AddWithValue("@Email", ((object)user.Email) ?? DBNull.Value);
+          command.Parameters.AddWithValue("@Notes", ((object)user.Notes) ?? DBNull.Value);
           command.Parameters.AddWithValue("@IsAdmin", (int)user.UserRole);
           command.Parameters.AddWithValue("@Modified", user.Modified);
           command.Parameters.AddWithValue("@ModifierId", user.ModifierId);
@@ -199,7 +191,7 @@ WHERE
     /// <returns>Count of affected rows in database</returns>
     public static int DeleteUser(Guid id)
     {
-      const string cmdText = @"DELETE FROM Users WHERE UserID = @Id";
+      const string cmdText = @"DELETE FROM Users WHERE UserId = @Id";
 
       try
       {
@@ -234,7 +226,7 @@ WHERE
     /// <returns>Count of affected rows in database</returns>
     public static int ArchiveUser(Guid id, Guid archiverId)
     {
-      const string cmdText = @"UPDATE Users SET Archived = GETDATE(), ArchiverId = @ArchiverId WHERE UserID = @Id";
+      const string cmdText = @"UPDATE Users SET Archived = GETDATE(), ArchiverId = @ArchiverId WHERE UserId = @Id";
 
       try
       {
@@ -272,12 +264,12 @@ WHERE
     {
       const string sql = @"
 SELECT 
-  UserID, FirstName, LastName, Email, Notes, IsAdmin,
+  UserId, FirstName, LastName, UserName, Email, Notes, IsAdmin,
   Created, CreatorId, Modified, ModifierId, Archived, ArchiverId
 FROM 
   Users
 WHERE
-  Email = @Email AND Password = @Password
+  (Email = @Email OR UserName = @Email) AND Password = @Password
 ";
       try
       {
@@ -285,7 +277,7 @@ WHERE
         {
           SqlCommand command = new SqlCommand(sql, connection);
           command.Parameters.AddWithValue("@Email", email);
-          command.Parameters.AddWithValue("@Password", CalculateHashedPassword(password));
+          command.Parameters.AddWithValue("@Password", calculateHashedPassword(password));
           SqlDataAdapter adapter = new SqlDataAdapter(command);
           DataTable table = new DataTable("User");
           adapter.Fill(table);
@@ -303,6 +295,75 @@ WHERE
     }
 
     /// <summary>
+    /// Get User Id by User Name
+    /// </summary>
+    /// <param name="userName">User Name</param>
+    /// <returns>Matching User Id by User Name</returns>
+    public static Guid? GetUserIdByUserName(string userName)
+    {
+      const string sql = @"SELECT UserId FROM Users WHERE UserName = @UserName";
+
+      try
+      {
+        using (SqlConnection connection = new SqlConnection(ConnectionString))
+        {
+          SqlCommand command = new SqlCommand(sql, connection);
+          command.Parameters.AddWithValue("@UserName", userName);
+
+          connection.Open();
+          object userId = command.ExecuteScalar();
+          connection.Close();
+
+          return (Guid?)userId;
+        }
+      }
+      catch (Exception ex)
+      {
+        throw ex;
+      }
+    }
+
+    /// <summary>
+    /// Set User Name for the user
+    /// </summary>
+    /// <param name="userId">Target User id</param>
+    /// <param name="userName">User Name to set</param>
+    /// <returns>Count of affected rows</returns>
+    public static int SetUserName(Guid userId, string userName)
+    {
+      try
+      {
+        const string cmdText = @"UPDATE Users SET UserName = @UserName WHERE UserId = @Id";
+
+        using (SqlConnection connection = new SqlConnection(ConnectionString))
+        {
+          SqlCommand command = new SqlCommand(cmdText, connection);
+          command.Parameters.AddWithValue("@Id", userId);
+
+          if (string.IsNullOrEmpty(userName))
+            command.Parameters.AddWithValue("@UserName", DBNull.Value);
+          else
+            command.Parameters.AddWithValue("@UserName", userName);
+
+          connection.Open();
+          int c = command.ExecuteNonQuery();
+          connection.Close();
+
+          if (c < 1)
+          {
+            throw new Exception("SetUserName() failed to set user's User Name!");
+          }
+
+          return c;
+        }
+      }
+      catch (Exception ex)
+      {
+        throw ex;
+      }
+    }
+
+    /// <summary>
     /// Set password for the user
     /// </summary>
     /// <param name="userId">Target User id</param>
@@ -310,7 +371,7 @@ WHERE
     /// <returns>Count of affected rows</returns>
     public static int SetPassword(Guid userId, string password)
     {
-      const string cmdText = @"UPDATE Users SET Password = @Password WHERE UserID = @Id";
+      const string cmdText = @"UPDATE Users SET Password = @Password WHERE UserId = @Id";
 
       try
       {
@@ -318,7 +379,7 @@ WHERE
         {
           SqlCommand command = new SqlCommand(cmdText, connection);
           command.Parameters.AddWithValue("@Id", userId);
-          command.Parameters.AddWithValue("@Password", CalculateHashedPassword(password));
+          command.Parameters.AddWithValue("@Password", calculateHashedPassword(password));
 
           connection.Open();
           int c = command.ExecuteNonQuery();

@@ -1,7 +1,7 @@
 ﻿/*
 * Copyright (C) JAMK/IT/Mika Mähönen
 * This file is part of the IIO11300 course's final project.
-* Created: 24.3.2016 Modified: 11.4.2016
+* Created: 24.3.2016 Modified: 14.4.2016
 * Authors: Mika Mähönen (K6058), Esa Salmikangas
 */
 using Kuluseuranta.Objects;
@@ -14,20 +14,8 @@ namespace Kuluseuranta.DB
   /// <summary>
   /// Class for Category Maintenance Dao
   /// </summary>
-  public class DBCategories
+  public class DBCategories : BaseDB
   {
-    #region PROPERTIES
-
-    /// <summary>
-    /// Connection String
-    /// </summary>
-    private static string ConnectionString
-    {
-      get { return Properties.Settings.Default.ConnectionString; }
-    }
-
-    #endregion PROPERTIES
-
     #region METHODS
 
     /// <summary>
@@ -110,7 +98,7 @@ VALUES (
           command.Parameters.AddWithValue("@Level", category.Level);
           command.Parameters.AddWithValue("@OwnerId", category.OwnerId);
           command.Parameters.AddWithValue("@Name", category.Name);
-          command.Parameters.AddWithValue("@Description", (category.Description == null ? "" : category.Description));
+          command.Parameters.AddWithValue("@Description", ((object)category.Description) ?? DBNull.Value);
           command.Parameters.AddWithValue("@Created", category.Created);
           command.Parameters.AddWithValue("@CreatorId", category.CreatorId);
 
@@ -161,7 +149,7 @@ WHERE
           command.Parameters.AddWithValue("@Level", category.Level);
           command.Parameters.AddWithValue("@OwnerId", category.OwnerId);
           command.Parameters.AddWithValue("@Name", category.Name);
-          command.Parameters.AddWithValue("@Description", (category.Description == null ? "" : category.Description));
+          command.Parameters.AddWithValue("@Description", ((object)category.Description) ?? DBNull.Value);
           command.Parameters.AddWithValue("@Modified", category.Modified);
           command.Parameters.AddWithValue("@ModifierId", category.ModifierId);
 

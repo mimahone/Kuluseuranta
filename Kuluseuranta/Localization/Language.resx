@@ -501,4 +501,22 @@
   <data name="DataRetrievedDetailsMessage" xml:space="preserve">
     <value>Tiedot haettu aikaväliltä: {0}-{1}. Kategorian valinnat: {2}/{3}</value>
   </data>
+  <data name="ReferenceNumber" xml:space="preserve">
+    <value>Viitenumero</value>
+  </data>
+  <data name="SetUserName" xml:space="preserve">
+    <value>Aseta käyttäjätunnus</value>
+  </data>
+  <data name="UserNameAlreadyInUseMessage" xml:space="preserve">
+    <value>Käyttäjätunnusta ei voi asettaa koska se on jo käytössä. Valitse toinen käyttäjätunnus.</value>
+  </data>
+  <data name="SettingUserName" xml:space="preserve">
+    <value>Käyttäjätunnuksen asettaminen</value>
+  </data>
+  <data name="SettingUserNameFailedBecauseOfX" xml:space="preserve">
+    <value>Käyttäjätunnuksen asettaminen epäonnistui: {0}</value>
+  </data>
+  <data name="UnexpectedErrorOccurredWhileSaving" xml:space="preserve">
+    <value>Tallennuksessa tapahtui odottamaton virhe!</value>
+  </data>
 </root>

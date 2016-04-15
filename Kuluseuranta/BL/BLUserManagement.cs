@@ -58,7 +58,7 @@ namespace Kuluseuranta.BL
         if (LoggedUser.UserRole != UserRole.AdminUser)
         {
           DataRow[] rows = dt.Select(string.Format("UserId='{0}'", LoggedUser.Id));
-          users.Add(MakeUser(rows[0]));
+          users.Add(makeUser(rows[0]));
         }
         else
         {
@@ -66,14 +66,14 @@ namespace Kuluseuranta.BL
           {
             foreach (DataRow row in dt.Rows)
             {
-              users.Add(MakeUser(row));
+              users.Add(makeUser(row));
             }
           }
           else
           {
             foreach (DataRow row in dt.Select("Archived IS NULL"))
             {
-              users.Add(MakeUser(row));
+              users.Add(makeUser(row));
             }
           }
         }
@@ -89,22 +89,23 @@ namespace Kuluseuranta.BL
     /// </summary>
     /// <param name="row">DataRow containing user data</param>
     /// <returns>User object</returns>
-    private static User MakeUser(DataRow row)
+    private static User makeUser(DataRow row)
     {
       if (row == null) return null;
 
-      User user = new User(row.Field<Guid>(0));
-      user.FirstName = row.Field<string>(1);
-      user.LastName = row.Field<string>(2);
-      user.Email = row.Field<string>(3);
-      user.Notes = row.Field<string>(4);
-      user.UserRole = (row.Field<bool>(5) ? UserRole.AdminUser : UserRole.BasicUser);
-      user.Created = row.Field<DateTime>(6);
-      user.CreatorId = row.Field<Guid>(7);
-      user.Modified = row.IsNull(8) ? (DateTime?)null : row.Field<DateTime>(8);
-      user.ModifierId = row.IsNull(9) ? Guid.Empty : row.Field<Guid>(9);
-      user.Archived = row.IsNull(10) ? (DateTime?)null : row.Field<DateTime>(10);
-      user.ArchiverId = row.IsNull(11) ? Guid.Empty : row.Field<Guid>(11);
+      User user = new User(row.Field<Guid>("UserId"));
+      user.FirstName = row.Field<string>("FirstName");
+      user.LastName = row.Field<string>("LastName");
+      user.UserName = row.Field<string>("UserName");
+      user.Email = row.Field<string>("Email");
+      user.Notes = row.Field<string>("Notes");
+      user.UserRole = (row.Field<bool>("IsAdmin") ? UserRole.AdminUser : UserRole.BasicUser);
+      user.Created = row.Field<DateTime>("Created");
+      user.CreatorId = row.Field<Guid>("CreatorId");
+      user.Modified = row.Field<DateTime?>("Modified");
+      user.ModifierId = row.IsNull("ModifierId") ? Guid.Empty : row.Field<Guid>("ModifierId");
+      user.Archived = row.Field<DateTime?>("Archived");
+      user.ArchiverId = row.IsNull("ArchiverId") ? Guid.Empty : row.Field<Guid>("ArchiverId");
 
       return user;
     }
@@ -206,7 +207,36 @@ namespace Kuluseuranta.BL
     {
       try
       {
-        return MakeUser(DBUsers.LoginUser(userName, password));
+        return makeUser(DBUsers.LoginUser(userName, password));
+      }
+      catch (Exception ex)
+      {
+        throw ex;
+      }
+    }
+
+    /// <summary>
+    /// Set User Name for the user
+    /// </summary>
+    /// <param name="user">Target User</param>
+    /// <param name="userName">User Name to set</param>
+    /// <returns>Count of affected rows</returns>
+    public static int SetUserName(User user, string userName)
+    {
+      try
+      {
+        if (!string.IsNullOrEmpty(userName))
+        {
+          //Check that user name is unique!
+          Guid? userId = DBUsers.GetUserIdByUserName(userName);
+
+          if (userId.HasValue && userId.Value != user.Id)
+          {
+            throw new Exception(Localization.Language.UserNameAlreadyInUseMessage);
+          }
+        }
+
+        return DBUsers.SetUserName(user.Id, userName);
       }
       catch (Exception ex)
       {

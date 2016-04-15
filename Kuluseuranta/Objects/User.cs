@@ -26,6 +26,7 @@ namespace Kuluseuranta.Objects
 
     private string firstName;
     private string lastName;
+    private string userName;
     private string email;
     private string notes;
     private UserRole userRole;
@@ -62,6 +63,19 @@ namespace Kuluseuranta.Objects
     /// Last name property
     /// </summary>
     public string FullName { get { return string.Format("{0} {1}", FirstName, LastName); } }
+
+    /// <summary>
+    /// User name property
+    /// </summary>
+    public string UserName
+    {
+      get { return userName; }
+      set
+      {
+        userName = value;
+        Notify("UserName");
+      }
+    }
 
     /// <summary>
     /// Email property
