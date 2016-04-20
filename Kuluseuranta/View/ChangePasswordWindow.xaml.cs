@@ -63,7 +63,7 @@ namespace Kuluseuranta.View
       {
         if (!string.IsNullOrWhiteSpace(pwPassword.Password) && pwPassword.Password.Equals(pwPassword2.Password))
         {
-          int i = UserManagement.SetPassword(TargetUser.Id, pwPassword.Password);
+          int i = UserManagement.SetPassword(TargetUser, pwPassword.Password);
 
           if (i > 0)
           {

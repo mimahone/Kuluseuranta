@@ -151,7 +151,7 @@
     <value>Kaikki alakategoriat</value>
   </data>
   <data name="Amount" xml:space="preserve">
-    <value>Määrä</value>
+    <value>Maksun määrä</value>
   </data>
   <data name="Back" xml:space="preserve">
     <value>Takaisin</value>
@@ -336,8 +336,8 @@
   <data name="PaymentsXDetailsAreUpdated" xml:space="preserve">
     <value>Maksun {0} tiedot on päivitetty</value>
   </data>
-  <data name="Payor" xml:space="preserve">
-    <value>Laskuttaja</value>
+  <data name="PayorsName" xml:space="preserve">
+    <value>Saajan nimi</value>
   </data>
   <data name="PayorIsMissing" xml:space="preserve">
     <value>laskuttaja puuttuu</value>
@@ -518,5 +518,20 @@
   </data>
   <data name="UnexpectedErrorOccurredWhileSaving" xml:space="preserve">
     <value>Tallennuksessa tapahtui odottamaton virhe!</value>
+  </data>
+  <data name="PayersAccount" xml:space="preserve">
+    <value>Maksajan tilinumero</value>
+  </data>
+  <data name="PayersName" xml:space="preserve">
+    <value>Maksajan nimi</value>
+  </data>
+  <data name="PayorsAccount" xml:space="preserve">
+    <value>Saajan tilinumero</value>
+  </data>
+  <data name="Currency" xml:space="preserve">
+    <value>Valuutta</value>
+  </data>
+  <data name="CopyAsNew" xml:space="preserve">
+    <value>Kopioi uutena</value>
   </data>
 </root>

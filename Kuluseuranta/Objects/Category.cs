@@ -1,17 +1,19 @@
 ﻿/*
 * Copyright (C) JAMK/IT/Mika Mähönen
 * This file is part of the IIO11300 course's final project.
-* Created: 24.3.2016 Modified: 11.4.2016
+* Created: 24.3.2016 Modified: 20.4.2016
 * Authors: Mika Mähönen (K6058), Esa Salmikangas
 */
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Kuluseuranta.Objects
 {
   /// <summary>
   /// Class for Category object
   /// </summary>
+  [Table("Categories")]
   public class Category : BaseObject
   {
     #region PROPERTIES
@@ -38,8 +40,9 @@ namespace Kuluseuranta.Objects
 
     /// <summary>
     /// Level of Category
-    /// (Will be 0 for main level Category)
+    /// (Will be 1 for main level Category)
     /// </summary>
+    [Column("CategoryLevel")]
     public int Level { get; set; }
 
     /// <summary>
@@ -60,6 +63,7 @@ namespace Kuluseuranta.Objects
     /// List of sub categories for the category
     /// (Only next level sub categories list)
     /// </summary>
+    [NotMapped]
     public ObservableCollection<Category> SubCategories
     {
       get

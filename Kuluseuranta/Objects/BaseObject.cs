@@ -6,6 +6,8 @@
 */
 using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Kuluseuranta.Objects
 {
@@ -34,6 +36,7 @@ namespace Kuluseuranta.Objects
     /// <summary>
     /// Primary key (datarow identifier) for objects
     /// </summary>
+    [Key]
     public Guid Id
     {
       get { return id; }
@@ -78,7 +81,7 @@ namespace Kuluseuranta.Objects
     /// <summary>
     /// Modifier Id (UserId) of user who last time modified object
     /// </summary>
-    public Guid ModifierId { get; set; }
+    public Guid? ModifierId { get; set; }
 
     /// <summary>
     /// TimeStamp when object was last time Archived
@@ -88,11 +91,12 @@ namespace Kuluseuranta.Objects
     /// <summary>
     /// Archiver Id (UserId) of user who archived object
     /// </summary>
-    public Guid ArchiverId { get; set; }
+    public Guid? ArchiverId { get; set; }
 
     /// <summary>
     /// Object's modification status
     /// </summary>
+    [NotMapped]
     public Status Status { get; set; }
 
     #endregion PROPERTIES

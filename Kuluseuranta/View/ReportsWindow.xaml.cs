@@ -3,7 +3,6 @@ using Kuluseuranta.Objects;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -56,7 +55,7 @@ namespace Kuluseuranta.View
 
     private void FillCategoryCombo()
     {
-      CategoryMaintenance.RefreshCategories(LoggedUser.Id);
+      CategoryMaintenance.RefreshCategories(LoggedUser);
       var list = CategoryMaintenance.CategoryList;
       list.Insert(0, new Category(Guid.Empty) { Name = Localization.Language.AllCategories });
       cboCategory.ItemsSource = list;
@@ -119,7 +118,7 @@ namespace Kuluseuranta.View
       if (cboCategory.SelectedItem != null)
       {
         Category category = (Category)cboCategory.SelectedItem;
-        CategoryMaintenance.RefreshCategories(LoggedUser.Id, category.Id, true);
+        CategoryMaintenance.RefreshCategories(LoggedUser, category.Id, true);
         var list = CategoryMaintenance.CategoryList;
         list.Insert(0, new Category(Guid.Empty) { Name = Localization.Language.AllSubCategories });
         cboSubCategory.ItemsSource = list;
@@ -129,16 +128,16 @@ namespace Kuluseuranta.View
 
     private void btnGet_Click(object sender, RoutedEventArgs e)
     {
-      SearchOptions options = new SearchOptions
-      {
-        StartDate = dtpDate1.SelectedDate,
-        EndDate = dtpDate2.SelectedDate,
-        CategoryId = (Guid?)cboCategory.SelectedValue,
-        SubCategoryId = (Guid?)cboSubCategory.SelectedValue,
-        UserId = LoggedUser.Id
-      };
+      //var options = new SearchOptions
+      //{
+      //  StartDate = dtpDate1.SelectedDate,
+      //  EndDate = dtpDate2.SelectedDate,
+      //  CategoryId = (Guid?)cboCategory.SelectedValue,
+      //  SubCategoryId = (Guid?)cboSubCategory.SelectedValue,
+      //  UserId = LoggedUser.Id
+      //};
 
-      PaymentsEntering.RefreshPayments(options);
+      PaymentsEntering.RefreshPayments(LoggedUser);
       localData = PaymentsEntering.PaymentList;
 
       // View for filttering

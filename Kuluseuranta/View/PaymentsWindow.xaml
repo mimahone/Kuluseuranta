@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Kuluseuranta.View"
         xmlns:resx="clr-namespace:Kuluseuranta.Localization"
         mc:Ignorable="d"
-        Title="{x:Static resx:Language.PaymentsEntering}" Height="650" Width="800" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
+        Title="{x:Static resx:Language.PaymentsEntering}" Height="680" Width="800" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
 
     <Window.Resources>
         <!-- Malli tiedon esittämistä varten -->
@@ -23,6 +23,7 @@
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                 <Button x:Name="btnRefresh" Content="{x:Static resx:Language.GetPayments}" Margin="5" Click="btnRefresh_Click" />
                 <Button x:Name="btnNew" Content="{x:Static resx:Language.AddPayment}" Margin="5" Click="btnNew_Click" />
+                <Button x:Name="btnCopyNew" Content="{x:Static resx:Language.CopyAsNew}" Margin="5" Click="btnCopyNew_Click" Visibility="Collapsed" />
                 <Button x:Name="btnDelete" Content="{x:Static resx:Language.DeletePayment}" Margin="5" Click="btnDelete_Click" Visibility="Collapsed"  />
             </StackPanel>
 
@@ -78,6 +79,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="100" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -86,45 +88,49 @@
 
                     <TextBlock Grid.Row="0" Grid.Column="1" Margin="10" x:Name="ID" Text="{Binding Id}" />
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static resx:Language.Payor}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtPayor" Margin="10" Text="{Binding Payor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static resx:Language.PayorsName}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtPayorsName" Margin="10" Text="{Binding PayorsName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static resx:Language.DueDate}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <DatePicker Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" SelectedDate="{Binding DueDate, Mode=TwoWay}" DisplayDate="{Binding DateTime.Now}" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static resx:Language.PayorsAccount}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <TextBox Grid.Row="2" Grid.Column="1" x:Name="txtPayorsAccount" Margin="10" Text="{Binding PayorsAccount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static resx:Language.Paid}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <DatePicker Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" SelectedDate="{Binding PaidDate, Mode=TwoWay}" DisplayDate="{Binding DateTime.Now}" />
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static resx:Language.DueDate}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <DatePicker Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" SelectedDate="{Binding DueDate, Mode=TwoWay}" DisplayDate="{Binding DateTime.Now}" />
 
-                    <TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static resx:Language.ReferenceNumber}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <TextBox Grid.Row="4" Grid.Column="1" Margin="10" Text="{Binding ReferenceNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static resx:Language.Paid}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <DatePicker Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" SelectedDate="{Binding PaidDate, Mode=TwoWay}" DisplayDate="{Binding DateTime.Now}" />
 
-                    <TextBlock Grid.Row="5" Grid.Column="0" Text="{x:Static resx:Language.Amount}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <TextBox Grid.Row="5" Grid.Column="1" Margin="10" Width="100" HorizontalAlignment="Left" Text="{Binding Amount, Mode=TwoWay, StringFormat=c, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Grid.Row="5" Grid.Column="0" Text="{x:Static resx:Language.ReferenceNumber}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <TextBox Grid.Row="5" Grid.Column="1" Margin="10" Text="{Binding ReferenceNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                    <TextBlock Grid.Row="6" Grid.Column="0" Text="{x:Static resx:Language.Category}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <ComboBox Grid.Row="6" Grid.Column="1" x:Name="cboCategory" Margin="10"
+                    <TextBlock Grid.Row="6" Grid.Column="0" Text="{x:Static resx:Language.Amount}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <TextBox Grid.Row="6" Grid.Column="1" Margin="10" Width="90" HorizontalAlignment="Left" Text="{Binding Amount, Mode=TwoWay, StringFormat=N, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Grid.Row="6" Grid.Column="1" Margin="105,10" Width="60" HorizontalAlignment="Left" Text="{Binding Currency, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" />
+
+                    <TextBlock Grid.Row="7" Grid.Column="0" Text="{x:Static resx:Language.Category}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <ComboBox Grid.Row="7" Grid.Column="1" x:Name="cboCategory" Margin="10"
                         ItemsSource="{Binding}"
                         SelectedValue="{Binding CategoryId, Mode=OneWay}"
                         SelectedValuePath="Id"
                         DisplayMemberPath="Name" SelectionChanged="cboCategory_SelectionChanged" />
 
-                    <TextBlock Grid.Row="7" Grid.Column="0" Text="{x:Static resx:Language.SubCategory}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <ComboBox Grid.Row="7" Grid.Column="1" x:Name="cboSubCategory" Margin="10"
+                    <TextBlock Grid.Row="8" Grid.Column="0" Text="{x:Static resx:Language.SubCategory}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <ComboBox Grid.Row="8" Grid.Column="1" x:Name="cboSubCategory" Margin="10"
                         ItemsSource="{Binding}"
                         SelectedValue="{Binding SubCategoryId, Mode=OneWay}"
                         SelectedValuePath="Id"
                         DisplayMemberPath="Name" />
 
-                    <TextBlock Grid.Row="8" Grid.Column="0" Text="{x:Static resx:Language.Notes}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <TextBox Grid.Row="8" Grid.Column="1" Margin="10" Text="{Binding Notes}" AcceptsReturn="True" TextWrapping="Wrap" />
+                    <TextBlock Grid.Row="9" Grid.Column="0" Text="{x:Static resx:Language.Notes}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <TextBox Grid.Row="9" Grid.Column="1" Margin="10" Text="{Binding Notes}" AcceptsReturn="True" TextWrapping="Wrap" />
 
-                    <TextBlock Grid.Row="9" Grid.Column="0" Text="{x:Static resx:Language.Created}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <TextBlock Grid.Row="9" Grid.Column="1" Margin="10" Text="{Binding Path=Created}" />
+                    <TextBlock Grid.Row="10" Grid.Column="0" Text="{x:Static resx:Language.Created}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <TextBlock Grid.Row="10" Grid.Column="1" Margin="10" Text="{Binding Path=Created}" />
 
-                    <TextBlock Grid.Row="10" Grid.Column="0" Text="{x:Static resx:Language.Modified}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <TextBlock Grid.Row="10" Grid.Column="1" Margin="10" Text="{Binding Modified}" />
+                    <TextBlock Grid.Row="11" Grid.Column="0" Text="{x:Static resx:Language.Modified}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <TextBlock Grid.Row="11" Grid.Column="1" Margin="10" Text="{Binding Modified}" />
 
-                    <Button Grid.Row="11" Grid.Column="1" x:Name="btnSave" Content="{x:Static resx:Language.Save}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="30" FontSize="16" Click="btnSave_Click" />
+                    <Button Grid.Row="12" Grid.Column="1" x:Name="btnSave" Content="{x:Static resx:Language.Save}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="30" FontSize="16" Click="btnSave_Click" />
                 </Grid>
                 
             </Grid>

@@ -160,7 +160,7 @@ namespace Kuluseuranta.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Määrä.
+        ///   Looks up a localized string similar to Maksun määrä.
         /// </summary>
         public static string Amount {
             get {
@@ -439,11 +439,29 @@ namespace Kuluseuranta.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Kopioi uutena.
+        /// </summary>
+        public static string CopyAsNew {
+            get {
+                return ResourceManager.GetString("CopyAsNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tallennettu.
         /// </summary>
         public static string Created {
             get {
                 return ResourceManager.GetString("Created", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Valuutta.
+        /// </summary>
+        public static string Currency {
+            get {
+                return ResourceManager.GetString("Currency", resourceCulture);
             }
         }
         
@@ -844,6 +862,24 @@ namespace Kuluseuranta.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Maksajan tilinumero.
+        /// </summary>
+        public static string PayersAccount {
+            get {
+                return ResourceManager.GetString("PayersAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maksajan nimi.
+        /// </summary>
+        public static string PayersName {
+            get {
+                return ResourceManager.GetString("PayersName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Maksu on poistettu.
         /// </summary>
         public static string PaymentIsDeleted {
@@ -889,20 +925,29 @@ namespace Kuluseuranta.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Laskuttaja.
-        /// </summary>
-        public static string Payor {
-            get {
-                return ResourceManager.GetString("Payor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to laskuttaja puuttuu.
         /// </summary>
         public static string PayorIsMissing {
             get {
                 return ResourceManager.GetString("PayorIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saajan tilinumero.
+        /// </summary>
+        public static string PayorsAccount {
+            get {
+                return ResourceManager.GetString("PayorsAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saajan nimi.
+        /// </summary>
+        public static string PayorsName {
+            get {
+                return ResourceManager.GetString("PayorsName", resourceCulture);
             }
         }
         

@@ -55,10 +55,17 @@
                     </Style>
                 </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="{x:Static resx:Language.Payor}" Binding="{Binding Payor, Mode=OneWay}" />
+                    <DataGridTextColumn Header="{x:Static resx:Language.PayorsName}" Binding="{Binding PayorsName, Mode=OneWay}" />
                     <DataGridTextColumn Header="{x:Static resx:Language.DueDate}" Binding="{Binding DueDate, Mode=OneWay, StringFormat=d}" />
                     <DataGridTextColumn Header="{x:Static resx:Language.Paid}" Binding="{Binding PaidDate, Mode=OneWay, StringFormat=d}" />
-                    <DataGridTextColumn Header="{x:Static resx:Language.Amount}" Binding="{Binding Amount, Mode=OneWay, StringFormat=c}" />
+                    <DataGridTextColumn Header="{x:Static resx:Language.Amount}" Binding="{Binding Amount, Mode=OneWay, StringFormat=n}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Right" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="{x:Static resx:Language.Currency}" Binding="{Binding Currency, Mode=OneWay}" />
                     <DataGridTextColumn Header="{x:Static resx:Language.Created}" Binding="{Binding Created, Mode=OneWay, StringFormat=g}" />
                     <DataGridTextColumn Header="{x:Static resx:Language.Modified}" Binding="{Binding Modified, Mode=OneWay, StringFormat=g}" />
                     <DataGridTextColumn Header="{x:Static resx:Language.Notes}" Binding="{Binding Notes}" Width="*" />

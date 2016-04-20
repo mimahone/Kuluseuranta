@@ -5,6 +5,7 @@
 * Authors: Mika Mähönen (K6058), Esa Salmikangas
 */
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Kuluseuranta.Objects
 {
@@ -20,6 +21,7 @@ namespace Kuluseuranta.Objects
   /// <summary>
   /// Class for User object
   /// </summary>
+  [Table("Users")]
   public class User : BaseObject
   {
     #region PROPERTIES
@@ -91,6 +93,11 @@ namespace Kuluseuranta.Objects
     }
 
     /// <summary>
+    /// Password property
+    /// </summary>
+    public string Password { get; set; }
+
+    /// <summary>
     /// Notes property
     /// </summary>
     public string Notes
@@ -102,6 +109,12 @@ namespace Kuluseuranta.Objects
         Notify("Notes");
       }
     }
+
+    /// <summary>
+    /// Photo property
+    /// </summary>
+    [NotMapped]
+    public byte[] Photo { get; set; }
 
     /// <summary>
     /// User role for user

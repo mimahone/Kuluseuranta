@@ -95,7 +95,7 @@ namespace Kuluseuranta.View
 
       try
       {
-        CategoryMaintenance.RefreshCategories(LoggedUser.Id);
+        CategoryMaintenance.RefreshCategories(LoggedUser);
         Categories = new ObservableCollection<Category>();
         Category root = new Category() { Name = Localization.Language.Categories };
         Categories.Add(root);
@@ -107,7 +107,7 @@ namespace Kuluseuranta.View
 
         foreach (Category category in root.SubCategories)
         {
-          CategoryMaintenance.RefreshCategories(LoggedUser.Id, category.Id);
+          CategoryMaintenance.RefreshCategories(LoggedUser, category.Id);
 
           foreach (Category subCategory in CategoryMaintenance.CategoryList)
           {

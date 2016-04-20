@@ -1,20 +1,22 @@
 ﻿/*
 * Copyright (C) JAMK/IT/Mika Mähönen
 * This file is part of the IIO11300 course's final project.
-* Created: 24.3.2016 Modified: 14.4.2016
+* Created: 24.3.2016 Modified: 19.4.2016
 * Authors: Mika Mähönen (K6058), Esa Salmikangas
 */
 using Kuluseuranta.Objects;
 using System;
+using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using System.Data.Entity;
+using System.Linq;
 
 namespace Kuluseuranta.DB
 {
   /// <summary>
   /// Class for User Management Dao
   /// </summary>
-  public class DBUsers : BaseDB
+  public class DBUsers
   {
     #region PROPERTIES
 
@@ -32,7 +34,7 @@ namespace Kuluseuranta.DB
     /// </summary>
     /// <param name="password">Password to Hash</param>
     /// <returns>Hashed password</returns>
-    private static string calculateHashedPassword(string password)
+    public static string CalculateHashedPassword(string password)
     {
       using (var sha = System.Security.Cryptography.SHA256.Create())
       {
@@ -42,29 +44,44 @@ namespace Kuluseuranta.DB
     }
 
     /// <summary>
-    /// Get Users as DataTable from Database
+    /// Get Users from Database
     /// </summary>
-    /// <returns>DataTable containing Users</returns>
-    public static DataTable GetUsers()
+    /// <param name="loggedUser">Logged User</param>
+    /// <param name="includeArchived">If true archived users will be listed too (default false)</param>
+    /// <returns>List of Users</returns>
+    public static List<User> GetList(User loggedUser, bool includeArchived = false)
     {
-      const string sql = @"
-SELECT 
-  UserId, FirstName, LastName, UserName, Email, Notes, IsAdmin,
-  Created, CreatorId, Modified, ModifierId, Archived, ArchiverId
-FROM 
-  Users
-ORDER BY
-  FirstName, LastName
-";
+      List<User> list;
+
       try
       {
-        using (SqlConnection connection = new SqlConnection(ConnectionString))
+        using (var db = new PaymentsContext())
         {
-          SqlDataAdapter adapter = new SqlDataAdapter(sql, connection);
-          DataTable table = new DataTable("Users");
-          adapter.Fill(table);
-          return table;
+          if (loggedUser.UserRole == UserRole.AdminUser)
+          {
+            if (includeArchived)
+            {
+              list = db.Users
+              .OrderBy(p => p.FirstName)
+              .ThenBy(p => p.LastName)
+              .ToList();
+            }
+            else
+            {
+              list = db.Users
+                .Where(p => p.Archived == null)
+                .OrderBy(p => p.FirstName)
+                .ThenBy(p => p.LastName)
+                .ToList();
+            }
+          }
+          else
+          {
+            list = db.Users.Where(p => p.Id == loggedUser.Id).ToList();
+          }
         }
+
+        return list;
       }
       catch (Exception ex)
       {
@@ -77,55 +94,24 @@ ORDER BY
     /// </summary>
     /// <param name="user">User to Create</param>
     /// <returns>Count of affected rows in database</returns>
-    public static int CreateUser(User user)
+    public static int Create(User user)
     {
-      const string sql = @"
-INSERT INTO Users (
-  UserId,
-  FirstName,
-  LastName,
-  Email,
-  Notes,
-  IsAdmin,
-  Created,
-  CreatorId
-)
-VALUES (
-  @Id,
-  @FirstName,
-  @LastName,
-  @Email,
-  @Notes,
-  @IsAdmin,
-  @Created,
-  @CreatorId
-)
-";
+      int c = 0;
+
       try
       {
-        using (SqlConnection connection = new SqlConnection(ConnectionString))
+        using (var db = new PaymentsContext())
         {
-          SqlCommand command = new SqlCommand(sql, connection);
-          command.Parameters.AddWithValue("@Id", user.Id);
-          command.Parameters.AddWithValue("@FirstName", user.FirstName);
-          command.Parameters.AddWithValue("@LastName", user.LastName);
-          command.Parameters.AddWithValue("@Email", ((object)user.Email) ?? DBNull.Value);
-          command.Parameters.AddWithValue("@Notes", ((object)user.Notes) ?? DBNull.Value);
-          command.Parameters.AddWithValue("@IsAdmin", (int)user.UserRole);
-          command.Parameters.AddWithValue("@Created", user.Created);
-          command.Parameters.AddWithValue("@CreatorId", user.CreatorId);
-
-          connection.Open();
-          int c = command.ExecuteNonQuery();
-          connection.Close();
-
-          if (c < 1)
-          {
-            throw new Exception("CreateUser() failed to create new user!");
-          }
-
-          return c;
+          db.Users.Add(user);
+          c = db.SaveChanges();
         }
+
+        if (c < 1)
+        {
+          throw new Exception("Create<User>() failed to create new user!");
+        }
+
+        return c;
       }
       catch (Exception ex)
       {
@@ -134,49 +120,29 @@ VALUES (
     }
 
     /// <summary>
-    /// Updates existing User to Database
+    /// Updates existing User in Database
     /// </summary>
     /// <param name="user">User to Update</param>
     /// <returns>Count of affected rows in database</returns>
-    public static int UpdateUser(User user)
+    public static int Update(User user)
     {
-      const string cmdText = @"
-UPDATE Users SET
-  FirstName = @FirstName,
-  LastName = @LastName,
-  Email = @Email,
-  Notes = @Notes,
-  IsAdmin = @IsAdmin,
-  Modified = @Modified,
-  ModifierId = @ModifierId
-WHERE
-  UserId = @Id
-";
+      int c = 0;
+
       try
       {
-        using (SqlConnection connection = new SqlConnection(ConnectionString))
+        using (var db = new PaymentsContext())
         {
-          SqlCommand command = new SqlCommand(cmdText, connection);
-          command.Parameters.AddWithValue("@Id", user.Id);
-          command.Parameters.AddWithValue("@FirstName", user.FirstName);
-          command.Parameters.AddWithValue("@LastName", user.LastName);
-          command.Parameters.AddWithValue("@Email", ((object)user.Email) ?? DBNull.Value);
-          command.Parameters.AddWithValue("@Notes", ((object)user.Notes) ?? DBNull.Value);
-          command.Parameters.AddWithValue("@IsAdmin", (int)user.UserRole);
-          command.Parameters.AddWithValue("@Modified", user.Modified);
-          command.Parameters.AddWithValue("@ModifierId", user.ModifierId);
-
-          connection.Open();
-          int c = command.ExecuteNonQuery();
-          connection.Close();
-
-          if (c < 1)
-          {
-            throw new Exception("UpdateUser() failed to update user's details!");
-          }
-
-          return c;
+          db.Users.Attach(user);
+          db.Entry(user).State = EntityState.Modified;
+          c = db.SaveChanges();
         }
+
+        if (c < 1)
+        {
+          throw new Exception("Update<User>() failed to update user's details!");
+        }
+
+        return c;
       }
       catch (Exception ex)
       {
@@ -187,66 +153,27 @@ WHERE
     /// <summary>
     /// Delete User from Database
     /// </summary>
-    /// <param name="id">Id of User to Delete</param>
+    /// <param name="user">User to Delete</param>
     /// <returns>Count of affected rows in database</returns>
-    public static int DeleteUser(Guid id)
+    public static int Delete(User user)
     {
-      const string cmdText = @"DELETE FROM Users WHERE UserId = @Id";
+      int c = 0;
 
       try
       {
-        using (SqlConnection connection = new SqlConnection(ConnectionString))
+        using (var db = new PaymentsContext())
         {
-          SqlCommand command = new SqlCommand(cmdText, connection);
-          command.Parameters.AddWithValue("@Id", id);
-
-          connection.Open();
-          int c = command.ExecuteNonQuery();
-          connection.Close();
-
-          if (c < 1)
-          {
-            throw new Exception("DeleteUser() failed to delete user!");
-          }
-
-          return c;
+          db.Users.Attach(user);
+          db.Users.Remove(user);
+          c = db.SaveChanges();
         }
-      }
-      catch (Exception ex)
-      {
-        throw ex;
-      }
-    }
 
-    /// <summary>
-    /// Archives existing User to Database
-    /// </summary>
-    /// <param name="id">Id of Item (User) to Archive</param>
-    /// <param name="archiverId">Archiver (User) Id</param>
-    /// <returns>Count of affected rows in database</returns>
-    public static int ArchiveUser(Guid id, Guid archiverId)
-    {
-      const string cmdText = @"UPDATE Users SET Archived = GETDATE(), ArchiverId = @ArchiverId WHERE UserId = @Id";
-
-      try
-      {
-        using (SqlConnection connection = new SqlConnection(ConnectionString))
+        if (c < 1)
         {
-          SqlCommand command = new SqlCommand(cmdText, connection);
-          command.Parameters.AddWithValue("@Id", id);
-          command.Parameters.AddWithValue("@ArchiverId", archiverId);
-
-          connection.Open();
-          int c = command.ExecuteNonQuery();
-          connection.Close();
-
-          if (c < 1)
-          {
-            throw new Exception("ArchiveUser() failed to archive user's details!");
-          }
-
-          return c;
+          throw new Exception("Delete<User>() failed to delete user!");
         }
+
+        return c;
       }
       catch (Exception ex)
       {
@@ -257,36 +184,23 @@ WHERE
     /// <summary>
     /// Login User
     /// </summary>
-    /// <param name="email">User's email</param>
+    /// <param name="userName">User's user name or email</param>
     /// <param name="password">Password</param>
-    /// <returns>User matching with Email and Password</returns>
-    public static DataRow LoginUser(string email, string password)
+    /// <returns>User matching with User Name and Password</returns>
+    public static User LoginUser(string userName, string password)
     {
-      const string sql = @"
-SELECT 
-  UserId, FirstName, LastName, UserName, Email, Notes, IsAdmin,
-  Created, CreatorId, Modified, ModifierId, Archived, ArchiverId
-FROM 
-  Users
-WHERE
-  (Email = @Email OR UserName = @Email) AND Password = @Password
-";
+      User user;
+
       try
       {
-        using (SqlConnection connection = new SqlConnection(ConnectionString))
-        {
-          SqlCommand command = new SqlCommand(sql, connection);
-          command.Parameters.AddWithValue("@Email", email);
-          command.Parameters.AddWithValue("@Password", calculateHashedPassword(password));
-          SqlDataAdapter adapter = new SqlDataAdapter(command);
-          DataTable table = new DataTable("User");
-          adapter.Fill(table);
+        string hashedPassword = CalculateHashedPassword(password);
 
-          if (table.Rows.Count == 1)
-            return table.Rows[0];
-          else
-            return null;
+        using (var db = new PaymentsContext())
+        {
+          user = db.Users.FirstOrDefault(p => (p.UserName == userName || p.Email == userName) && p.Password == hashedPassword);
         }
+
+        return user;
       }
       catch (Exception ex)
       {
@@ -295,103 +209,22 @@ WHERE
     }
 
     /// <summary>
-    /// Get User Id by User Name
+    /// Get User by User Name
     /// </summary>
     /// <param name="userName">User Name</param>
-    /// <returns>Matching User Id by User Name</returns>
-    public static Guid? GetUserIdByUserName(string userName)
+    /// <returns>Matching User by User Name</returns>
+    public static User GetUserByUserName(string userName)
     {
-      const string sql = @"SELECT UserId FROM Users WHERE UserName = @UserName";
+      User user;
 
       try
       {
-        using (SqlConnection connection = new SqlConnection(ConnectionString))
+        using (var db = new PaymentsContext())
         {
-          SqlCommand command = new SqlCommand(sql, connection);
-          command.Parameters.AddWithValue("@UserName", userName);
-
-          connection.Open();
-          object userId = command.ExecuteScalar();
-          connection.Close();
-
-          return (Guid?)userId;
+          user = db.Users.FirstOrDefault(p => p.UserName == userName);
         }
-      }
-      catch (Exception ex)
-      {
-        throw ex;
-      }
-    }
 
-    /// <summary>
-    /// Set User Name for the user
-    /// </summary>
-    /// <param name="userId">Target User id</param>
-    /// <param name="userName">User Name to set</param>
-    /// <returns>Count of affected rows</returns>
-    public static int SetUserName(Guid userId, string userName)
-    {
-      try
-      {
-        const string cmdText = @"UPDATE Users SET UserName = @UserName WHERE UserId = @Id";
-
-        using (SqlConnection connection = new SqlConnection(ConnectionString))
-        {
-          SqlCommand command = new SqlCommand(cmdText, connection);
-          command.Parameters.AddWithValue("@Id", userId);
-
-          if (string.IsNullOrEmpty(userName))
-            command.Parameters.AddWithValue("@UserName", DBNull.Value);
-          else
-            command.Parameters.AddWithValue("@UserName", userName);
-
-          connection.Open();
-          int c = command.ExecuteNonQuery();
-          connection.Close();
-
-          if (c < 1)
-          {
-            throw new Exception("SetUserName() failed to set user's User Name!");
-          }
-
-          return c;
-        }
-      }
-      catch (Exception ex)
-      {
-        throw ex;
-      }
-    }
-
-    /// <summary>
-    /// Set password for the user
-    /// </summary>
-    /// <param name="userId">Target User id</param>
-    /// <param name="password">Password to set</param>
-    /// <returns>Count of affected rows</returns>
-    public static int SetPassword(Guid userId, string password)
-    {
-      const string cmdText = @"UPDATE Users SET Password = @Password WHERE UserId = @Id";
-
-      try
-      {
-        using (SqlConnection connection = new SqlConnection(ConnectionString))
-        {
-          SqlCommand command = new SqlCommand(cmdText, connection);
-          command.Parameters.AddWithValue("@Id", userId);
-          command.Parameters.AddWithValue("@Password", calculateHashedPassword(password));
-
-          connection.Open();
-          int c = command.ExecuteNonQuery();
-          connection.Close();
-
-          if (c < 1)
-          {
-            throw new Exception("SetPassword() failed to set user's password!");
-          }
-
-          return c;
-        }
+        return user;
       }
       catch (Exception ex)
       {
@@ -403,3 +236,5 @@ WHERE
 
   }
 }
+
+//http://www.entityframeworktutorial.net/code-first/entity-framework-code-first.aspx

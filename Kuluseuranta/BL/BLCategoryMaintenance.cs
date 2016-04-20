@@ -1,7 +1,7 @@
 ﻿/*
 * Copyright (C) JAMK/IT/Mika Mähönen
 * This file is part of the IIO11300 course's final project.
-* Created: 24.3.2016 Modified: 11.4.2016
+* Created: 24.3.2016 Modified: 20.4.2016
 * Authors: Mika Mähönen (K6058), Esa Salmikangas
 */
 using Kuluseuranta.DB;
@@ -9,7 +9,6 @@ using Kuluseuranta.Objects;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.Linq;
 
 namespace Kuluseuranta.BL
@@ -45,63 +44,25 @@ namespace Kuluseuranta.BL
     /// <summary>
     /// Refresh Categories List
     /// </summary>
-    /// <param name="userId">User Id</param>
+    /// <param name="loggedUser">Logged User</param>
     /// <param name="parentId">Parent Id (default Empty Guid)</param>
     /// <param name="includeArchived">If true archived users will be listed too (default false)</param>
-    public static void RefreshCategories(Guid userId, Guid parentId = default(Guid), bool includeArchived = false)
+    public static void RefreshCategories(User loggedUser, Guid parentId = default(Guid), bool includeArchived = false)
     {
       try
       {
         categories = new ObservableCollection<Category>();
+        var list = DBCategories.GetList(loggedUser, parentId, includeArchived);
 
-        DataTable dt = DBCategories.GetCategories(userId, parentId);
-
-        // ORM
-
-        if (includeArchived)
+        foreach (var item in list)
         {
-          foreach (DataRow row in dt.Rows)
-          {
-            categories.Add(makeCategory(row));
-          }
-        }
-        else
-        {
-          foreach (DataRow row in dt.Select("Archived IS NULL"))
-          {
-            categories.Add(makeCategory(row));
-          }
+          categories.Add(item);
         }
       }
       catch (Exception ex)
       {
         throw ex;
       }
-    }
-
-    /// <summary>
-    /// Makes Category object of DataRow
-    /// </summary>
-    /// <param name="row">DataRow containing category data</param>
-    /// <returns>Category object</returns>
-    private static Category makeCategory(DataRow row)
-    {
-      if (row == null) return null;
-
-      Category category = new Category(row.Field<Guid>("CategoryId"));
-      category.ParentId = row.Field<Guid>("ParentId");
-      category.Level = row.Field<int>("CategoryLevel");
-      category.OwnerId = row.Field<Guid>("OwnerId");
-      category.Name = row.Field<string>("Name");
-      category.Description = row.Field<string>("Description");
-      category.Created = row.Field<DateTime>("Created");
-      category.CreatorId = row.Field<Guid>("CreatorId");
-      category.Modified = row.Field<DateTime?>("Modified");
-      category.ModifierId = row.IsNull("ModifierId") ? Guid.Empty : row.Field<Guid>("ModifierId");
-      category.Archived = row.Field<DateTime?>("Archived");
-      category.ArchiverId = row.IsNull("ArchiverId") ? Guid.Empty : row.Field<Guid>("ArchiverId");
-
-      return category;
     }
 
     /// <summary>
@@ -117,7 +78,7 @@ namespace Kuluseuranta.BL
         category.Created = DateTime.Now;
         category.CreatorId = LoggedUser.Id;
 
-        int c = DBCategories.CreateCategory(category);
+        int c = DBCategories.Create(category);
         if (c > 0)
         {
           category.Status = Status.Unchanged;
@@ -142,7 +103,7 @@ namespace Kuluseuranta.BL
         category.Modified = DateTime.Now;
         category.ModifierId = LoggedUser.Id;
 
-        int c = DBCategories.UpdateCategory(category);
+        int c = DBCategories.Update(category);
         if (c > 0)
         {
           category.Status = Status.Unchanged;
@@ -164,7 +125,12 @@ namespace Kuluseuranta.BL
     {
       try
       {
-        return DBCategories.DeleteCategory(category.Id);
+        int c = DBCategories.Delete(category);
+        if (c > 0)
+        {
+          category.Status = Status.Unchanged;
+        }
+        return c;
       }
       catch (Exception)
       {
@@ -183,11 +149,24 @@ namespace Kuluseuranta.BL
       {
         category.Archived = DateTime.Now;
         category.ArchiverId = LoggedUser.Id;
-        return DBCategories.ArchiveCategory(category.Id, category.ArchiverId);
+
+        var subCategories = DBCategories.GetList(LoggedUser, category.Id);
+
+        int c = 0;
+
+        foreach (var subCategory in subCategories)
+        {
+          subCategory.Archived = category.Archived;
+          subCategory.ArchiverId = LoggedUser.Id;
+          c += DBCategories.Update(subCategory);
+        }
+
+        c += DBCategories.Update(category);
+        return c;
       }
-      catch (Exception)
+      catch (Exception ex)
       {
-        throw;
+        throw ex;
       }
     }
 
@@ -197,7 +176,6 @@ namespace Kuluseuranta.BL
     /// <returns>Count of affected rows</returns>
     public static int SaveChanges()
     {
-      //TODO: Implement for EF
       int i = 0;
 
       try
@@ -207,11 +185,7 @@ namespace Kuluseuranta.BL
 
         foreach (Category item in deletedList)
         {
-          if (DeleteCategory(item) > 0)
-          {
-            item.Status = Status.Unchanged;
-            i++;
-          }
+          if (DeleteCategory(item) > 0) i++;
         }
 
         // Save created items
@@ -219,11 +193,7 @@ namespace Kuluseuranta.BL
 
         foreach (Category item in createdList)
         {
-          if (CreateCategory(item) > 0)
-          {
-            item.Status = Status.Unchanged;
-            i++;
-          }
+          if (CreateCategory(item) > 0) i++;
         }
 
         // Save modified items
@@ -231,11 +201,7 @@ namespace Kuluseuranta.BL
 
         foreach (Category item in modifiedList)
         {
-          if (UpdateCategory(item) > 0)
-          {
-            item.Status = Status.Unchanged;
-            i++;
-          }
+          if (UpdateCategory(item) > 0) i++;
         }
 
         return i;

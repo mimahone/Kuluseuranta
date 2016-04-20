@@ -1,7 +1,7 @@
 ﻿/*
 * Copyright (C) JAMK/IT/Mika Mähönen
 * This file is part of the IIO11300 course's final project.
-* Created: 24.3.2016 Modified: 11.4.2016
+* Created: 24.3.2016 Modified: 19.4.2016
 * Authors: Mika Mähönen (K6058), Esa Salmikangas
 */
 using Kuluseuranta.DB;
@@ -9,7 +9,6 @@ using Kuluseuranta.Objects;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.Linq;
 
 namespace Kuluseuranta.BL
@@ -51,63 +50,17 @@ namespace Kuluseuranta.BL
       try
       {
         users = new ObservableCollection<User>();
-        DataTable dt = DBUsers.GetUsers();
+        var list = DBUsers.GetList(LoggedUser, includeArchived);
 
-        // ORM
-
-        if (LoggedUser.UserRole != UserRole.AdminUser)
+        foreach (var item in list)
         {
-          DataRow[] rows = dt.Select(string.Format("UserId='{0}'", LoggedUser.Id));
-          users.Add(makeUser(rows[0]));
-        }
-        else
-        {
-          if (includeArchived)
-          {
-            foreach (DataRow row in dt.Rows)
-            {
-              users.Add(makeUser(row));
-            }
-          }
-          else
-          {
-            foreach (DataRow row in dt.Select("Archived IS NULL"))
-            {
-              users.Add(makeUser(row));
-            }
-          }
+          users.Add(item);
         }
       }
       catch (Exception ex)
       {
         throw ex;
       }
-    }
-
-    /// <summary>
-    /// Makes User object of DataRow
-    /// </summary>
-    /// <param name="row">DataRow containing user data</param>
-    /// <returns>User object</returns>
-    private static User makeUser(DataRow row)
-    {
-      if (row == null) return null;
-
-      User user = new User(row.Field<Guid>("UserId"));
-      user.FirstName = row.Field<string>("FirstName");
-      user.LastName = row.Field<string>("LastName");
-      user.UserName = row.Field<string>("UserName");
-      user.Email = row.Field<string>("Email");
-      user.Notes = row.Field<string>("Notes");
-      user.UserRole = (row.Field<bool>("IsAdmin") ? UserRole.AdminUser : UserRole.BasicUser);
-      user.Created = row.Field<DateTime>("Created");
-      user.CreatorId = row.Field<Guid>("CreatorId");
-      user.Modified = row.Field<DateTime?>("Modified");
-      user.ModifierId = row.IsNull("ModifierId") ? Guid.Empty : row.Field<Guid>("ModifierId");
-      user.Archived = row.Field<DateTime?>("Archived");
-      user.ArchiverId = row.IsNull("ArchiverId") ? Guid.Empty : row.Field<Guid>("ArchiverId");
-
-      return user;
     }
 
     /// <summary>
@@ -123,7 +76,7 @@ namespace Kuluseuranta.BL
         user.Created = DateTime.Now;
         user.CreatorId = LoggedUser.Id;
 
-        int c = DBUsers.CreateUser(user);
+        int c = DBUsers.Create(user);
         if (c > 0)
         {
           user.Status = Status.Unchanged;
@@ -148,7 +101,7 @@ namespace Kuluseuranta.BL
         user.Modified = DateTime.Now;
         user.ModifierId = LoggedUser.Id;
 
-        int c = DBUsers.UpdateUser(user);
+        int c = DBUsers.Update(user);
         if (c > 0)
         {
           user.Status = Status.Unchanged;
@@ -170,7 +123,12 @@ namespace Kuluseuranta.BL
     {
       try
       {
-        return DBUsers.DeleteUser(user.Id);
+        int c = DBUsers.Delete(user);
+        if (c > 0)
+        {
+          user.Status = Status.Unchanged;
+        }
+        return c;
       }
       catch (Exception)
       {
@@ -189,7 +147,7 @@ namespace Kuluseuranta.BL
       {
         user.Archived = DateTime.Now;
         user.ArchiverId = LoggedUser.Id;
-        return DBUsers.ArchiveUser(user.Id, user.ArchiverId);
+        return DBUsers.Update(user);
       }
       catch (Exception)
       {
@@ -200,14 +158,14 @@ namespace Kuluseuranta.BL
     /// <summary>
     /// Login User
     /// </summary>
-    /// <param name="userName">User Name</param>
+    /// <param name="userName">User Name or email</param>
     /// <param name="password">Password</param>
     /// <returns>User matching with User Name and Password</returns>
     public static User LoginUser(string userName, string password)
     {
       try
       {
-        return makeUser(DBUsers.LoginUser(userName, password));
+        return DBUsers.LoginUser(userName, password);
       }
       catch (Exception ex)
       {
@@ -228,15 +186,17 @@ namespace Kuluseuranta.BL
         if (!string.IsNullOrEmpty(userName))
         {
           //Check that user name is unique!
-          Guid? userId = DBUsers.GetUserIdByUserName(userName);
+          User found = DBUsers.GetUserByUserName(userName);
 
-          if (userId.HasValue && userId.Value != user.Id)
+          if (found != null && found.Id != user.Id)
           {
             throw new Exception(Localization.Language.UserNameAlreadyInUseMessage);
           }
         }
 
-        return DBUsers.SetUserName(user.Id, userName);
+        user.UserName = userName;
+
+        return DBUsers.Update(user);
       }
       catch (Exception ex)
       {
@@ -247,14 +207,15 @@ namespace Kuluseuranta.BL
     /// <summary>
     /// Set password for the user
     /// </summary>
-    /// <param name="userId">Target User id</param>
+    /// <param name="user">Target User</param>
     /// <param name="password">Password to set</param>
     /// <returns>Count of affected rows</returns>
-    public static int SetPassword(Guid userId, string password)
+    public static int SetPassword(User user, string password)
     {
       try
       {
-        return DBUsers.SetPassword(userId, password);
+        user.Password = DBUsers.CalculateHashedPassword(password);
+        return DBUsers.Update(user);
       }
       catch (Exception ex)
       {
@@ -277,11 +238,7 @@ namespace Kuluseuranta.BL
 
         foreach (User item in deletedList)
         {
-          if (DeleteUser(item) > 0)
-          {
-            item.Status = Status.Unchanged;
-            i++;
-          }
+          if (DeleteUser(item) > 0) i++;
         }
 
         // Save created items
@@ -289,11 +246,7 @@ namespace Kuluseuranta.BL
 
         foreach (User item in createdList)
         {
-          if (CreateUser(item) > 0)
-          {
-            item.Status = Status.Unchanged;
-            i++;
-          }
+          if (CreateUser(item) > 0) i++;
         }
 
         // Save modified items
@@ -301,11 +254,7 @@ namespace Kuluseuranta.BL
 
         foreach (User item in modifiedList)
         {
-          if (UpdateUser(item) > 0)
-          {
-            item.Status = Status.Unchanged;
-            i++;
-          }
+          if (UpdateUser(item) > 0) i++;
         }
 
         return i;

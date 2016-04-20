@@ -55,7 +55,7 @@ namespace Kuluseuranta.View
 
     private void FillCategoryCombo()
     {
-      CategoryMaintenance.RefreshCategories(LoggedUser.Id);
+      CategoryMaintenance.RefreshCategories(LoggedUser);
       cboCategory.ItemsSource = CategoryMaintenance.CategoryList;
     }
 
@@ -65,7 +65,7 @@ namespace Kuluseuranta.View
       string message = "";
       //TextBox txt = null;
 
-      if (string.IsNullOrWhiteSpace(payment.Payor))
+      if (string.IsNullOrWhiteSpace(payment.PayorsName))
       {
         //txt = txtPayor;
         message = Localization.Language.PayorIsMissing;
@@ -96,13 +96,9 @@ namespace Kuluseuranta.View
     {
       string message = "";
 
-      SearchOptions options = new SearchOptions {
-        UserId = LoggedUser.Id
-      };
-
       try
       {
-        PaymentsEntering.RefreshPayments(options);
+        PaymentsEntering.RefreshPayments(LoggedUser);
         lstPayments.DataContext = PaymentsEntering.PaymentList;
         message = string.Format(Localization.Language.PaymentListUpdatedAtX, DateTime.Now);
       }
@@ -126,9 +122,35 @@ namespace Kuluseuranta.View
       cboCategory.SelectedIndex = -1;
       cboSubCategory.SelectedIndex = -1;
       cboSubCategory.ItemsSource = null;
+
       spPayment.DataContext = newPayment;
       spPayment.Visibility = Visibility.Visible;
-      txtPayor.Focus();
+      txtPayorsName.Focus();
+      lbMessages.Content = Localization.Language.AddNewPaymentMessage;
+    }
+
+    private void btnCopyNew_Click(object sender, RoutedEventArgs e)
+    {
+      Payment source = (Payment)spPayment.DataContext;
+
+      Payment target = new Payment();
+      target.Status = Status.Created;
+      target.OwnerId = LoggedUser.Id;
+      target.PayorsName = source.PayorsName;
+      target.PayorsAccount = source.PayorsAccount;
+      target.DueDate = null;
+      target.PaidDate = null;
+      target.ReferenceNumber = source.ReferenceNumber;
+      target.Amount = source.Amount;
+      target.Currency = source.Currency;
+      target.CategoryId = source.CategoryId;
+      target.SubCategoryId = source.SubCategoryId;
+      target.Notes = source.Notes;
+      target.CreatorId = LoggedUser.Id;
+
+      spPayment.DataContext = target;
+      spPayment.Visibility = Visibility.Visible;
+      txtPayorsName.Focus();
       lbMessages.Content = Localization.Language.AddNewPaymentMessage;
     }
 
@@ -191,8 +213,8 @@ namespace Kuluseuranta.View
           throw new Exception(Localization.Language.SameNamePaymentListedAlready);
         }
 
-        payment.CategoryId = (cboCategory.SelectedValue == null ? Guid.Empty : (Guid)cboCategory.SelectedValue);
-        payment.SubCategoryId = (cboSubCategory.SelectedValue == null ? Guid.Empty : (Guid)cboSubCategory.SelectedValue);
+        if (cboCategory.SelectedValue != null) payment.CategoryId = (Guid)cboCategory.SelectedValue;
+        if (cboSubCategory.SelectedValue != null) payment.SubCategoryId = (Guid)cboSubCategory.SelectedValue;
 
         PaymentsEntering.LoggedUser = LoggedUser;
 
@@ -242,6 +264,7 @@ namespace Kuluseuranta.View
         cboCategory.SelectedValue = payment.CategoryId;
         cboSubCategory.SelectedValue = payment.SubCategoryId;
         btnDelete.Visibility = Visibility.Visible;
+        btnCopyNew.Visibility = Visibility.Visible;
         spPayment.Visibility = Visibility.Visible;
         lbMessages.Content = string.Format(Localization.Language.SelectedPaymentX, payment.DisplayName);
       }
@@ -267,11 +290,12 @@ namespace Kuluseuranta.View
       if (cboCategory.SelectedItem != null)
       {
         Category category = (Category)cboCategory.SelectedItem;
-        CategoryMaintenance.RefreshCategories(LoggedUser.Id, category.Id);
+        CategoryMaintenance.RefreshCategories(LoggedUser, category.Id);
         cboSubCategory.ItemsSource = CategoryMaintenance.CategoryList;
       }
     }
 
     #endregion EVENT HANDLERS
+
   }
 }

@@ -1,7 +1,7 @@
 ﻿/*
 * Copyright (C) JAMK/IT/Mika Mähönen
 * This file is part of the IIO11300 course's final project.
-* Created: 24.3.2016 Modified: 11.4.2016
+* Created: 24.3.2016 Modified: 20.4.2016
 * Authors: Mika Mähönen (K6058), Esa Salmikangas
 */
 using Kuluseuranta.DB;
@@ -43,49 +43,19 @@ namespace Kuluseuranta.BL
     #region METHODS
 
     /// <summary>
-    /// Makes Payment object of DataRow
-    /// </summary>
-    /// <param name="row">DataRow containing Payment data</param>
-    /// <returns>Payment object</returns>
-    private static Payment makePayment(DataRow row)
-    {
-      if (row == null) return null;
-
-      Payment payment = new Payment(row.Field<Guid>("PaymentId"));
-      payment.OwnerId = row.Field<Guid>("OwnerId");
-      payment.Payor = row.Field<string>("PayorName");
-      payment.DueDate = row.IsNull("DueDate") ? (DateTime?)null : row.Field<DateTime>("DueDate");
-      payment.PaidDate = row.IsNull("Paid") ? (DateTime?)null : row.Field<DateTime>("Paid");
-      payment.ReferenceNumber = row.Field<string>("ReferenceNumber");
-      payment.Amount = row.IsNull("Amount") ? 0 : row.Field<double>("Amount");
-      payment.CategoryId = row.Field<Guid?>("CategoryId");
-      payment.SubCategoryId = row.Field<Guid?>("SubCategoryId");
-      payment.Notes = row.Field<string>("Notes");
-      payment.Created = row.Field<DateTime>("Created");
-      payment.CreatorId = row.Field<Guid>("CreatorId");
-      payment.Modified = row.Field<DateTime?>("Modified");
-      payment.ModifierId = row.IsNull("ModifierId") ? Guid.Empty : row.Field<Guid>("ModifierId");
-      payment.Archived = row.Field<DateTime?>("Archived");
-      payment.ArchiverId = row.IsNull("ArchiverId") ? Guid.Empty : row.Field<Guid>("ArchiverId");
-
-      return payment;
-    }
-
-    /// <summary>
     /// Refresh Payments List
     /// </summary>
-    /// <param name="options">Search Options</param>
-    public static void RefreshPayments(SearchOptions options)
+    /// <param name="loggedUser">Logged User</param>
+    public static void RefreshPayments(User loggedUser)
     {
       try
       {
         payments = new ObservableCollection<Payment>();
-        DataTable table = DBPayments.GetPayments(options);
+        var list = DBPayments.GetList(loggedUser);
 
-        // ORM
-        foreach (DataRow row in table.Rows)
+        foreach (var item in list)
         {
-          payments.Add(makePayment(row));
+          payments.Add(item);
         }
       }
       catch (Exception ex)
@@ -107,7 +77,7 @@ namespace Kuluseuranta.BL
         payment.Created = DateTime.Now;
         payment.CreatorId = LoggedUser.Id;
 
-        int c = DBPayments.CreatePayment(payment);
+        int c = DBPayments.Create(payment);
         if (c > 0)
         {
           payment.Status = Status.Unchanged;
@@ -132,7 +102,7 @@ namespace Kuluseuranta.BL
         payment.Modified = DateTime.Now;
         payment.ModifierId = LoggedUser.Id;
 
-        int c = DBPayments.UpdatePayment(payment);
+        int c = DBPayments.Update(payment);
         if (c > 0)
         {
           payment.Status = Status.Unchanged;
@@ -154,7 +124,12 @@ namespace Kuluseuranta.BL
     {
       try
       {
-        return DBPayments.DeletePayment(payment.Id);
+        int c = DBPayments.Delete(payment);
+        if (c > 0)
+        {
+          payment.Status = Status.Unchanged;
+        }
+        return c;
       }
       catch (Exception)
       {
@@ -173,7 +148,7 @@ namespace Kuluseuranta.BL
       {
         payment.Archived = DateTime.Now;
         payment.ArchiverId = LoggedUser.Id;
-        return DBPayments.ArchivePayment(payment.Id, payment.ArchiverId);
+        return DBPayments.Update(payment);
       }
       catch (Exception)
       {
@@ -196,11 +171,7 @@ namespace Kuluseuranta.BL
 
         foreach (Payment item in deletedList)
         {
-          if (DeletePayment(item) > 0)
-          {
-            item.Status = Status.Unchanged;
-            i++;
-          }
+          if (DeletePayment(item) > 0) i++;
         }
 
         // Save created items
@@ -208,11 +179,7 @@ namespace Kuluseuranta.BL
 
         foreach (Payment item in createdList)
         {
-          if (CreatePayment(item) > 0)
-          {
-            item.Status = Status.Unchanged;
-            i++;
-          }
+          if (CreatePayment(item) > 0) i++;
         }
 
         // Save modified items
@@ -220,11 +187,7 @@ namespace Kuluseuranta.BL
 
         foreach (Payment item in modifiedList)
         {
-          if (UpdatePayment(item) > 0)
-          {
-            item.Status = Status.Unchanged;
-            i++;
-          }
+          if (UpdatePayment(item) > 0) i++;
         }
 
         return i;

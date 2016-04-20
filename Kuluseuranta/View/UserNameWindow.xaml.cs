@@ -62,7 +62,6 @@ namespace Kuluseuranta.View
       {
         if (UserManagement.SetUserName(TargetUser, tbUserName.Text) > 0)
         {
-          TargetUser.UserName = tbUserName.Text;
           Close();
         }
         else
